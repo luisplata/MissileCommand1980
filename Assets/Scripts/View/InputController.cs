@@ -13,8 +13,8 @@ namespace View
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
-                point2.transform.position = new Vector3(touch.position.x, touch.position.y, 0);
-                Fire(touch.position);
+                //point2.transform.position = new Vector3(touch.position.x, touch.position.y, 0);
+                //Fire(touch.position);
             }
 
             if (Input.GetMouseButton(0))

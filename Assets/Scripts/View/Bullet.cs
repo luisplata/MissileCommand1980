@@ -6,6 +6,7 @@ namespace View
     {
         [SerializeField] private float distanceMin;
         [SerializeField] private float impulseForce;
+        [SerializeField] private Explosion explosion;
         private Vector2 goal;
         
         public void Configure(Vector2 destiny, Vector2 diff)
@@ -24,7 +25,8 @@ namespace View
 
         private void Explosion()
         {
-            Destroy(gameObject);
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            explosion.Configuration();
         }
     }
 }

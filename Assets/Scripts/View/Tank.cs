@@ -9,6 +9,7 @@ namespace View
         [SerializeField] private float angleMore;
         [SerializeField] private float min;
         [SerializeField] private GameObject bullet;
+        [SerializeField] private DebuggerCustom debuggerCustom;
 
         private bool _rotating;
         private Vector2 point;
@@ -59,6 +60,8 @@ namespace View
         {
             _rotating = true;
             point = toPoint;
+            debuggerCustom.Debug($"GetAngle() {GetAngle()}");
+            debuggerCustom.Debug($"point {point}");
         }
 
         public void Fire(Vector2 vector2)
