@@ -6,12 +6,13 @@ namespace ServiceLocatorPath
     {
         private void Awake()
         {
-            var playFab = new PlayFabCustom();
-            ServiceLocator.Instance.RegisterService<IPlayFabCustom>(playFab);
             if (GameObject.FindObjectsOfType<Installer>().Length > 1)
             {
                 Destroy(gameObject);
+                return;
             }
+            var playFab = new PlayFabCustom();
+            ServiceLocator.Instance.RegisterService<IPlayFabCustom>(playFab);
             DontDestroyOnLoad(gameObject);
         }
     }

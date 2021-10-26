@@ -71,8 +71,8 @@ namespace View
         {
             _rotating = true;
             point = toPoint;
-            debuggerCustom.Debug($"GetAngle() {GetAngle()}");
-            debuggerCustom.Debug($"point {point}");
+            debuggerCustom?.Debug($"GetAngle() {GetAngle()}");
+            debuggerCustom?.Debug($"point {point}");
         }
 
         public void Fire(Vector2 vector2)
