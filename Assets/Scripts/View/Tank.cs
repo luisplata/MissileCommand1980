@@ -10,23 +10,30 @@ namespace View
         [SerializeField] private float min;
         [SerializeField] private GameObject bullet;
         [SerializeField] private DebuggerCustom debuggerCustom;
+        [SerializeField] private float cooldown;
+
+        public delegate void OnPlayerDestroyEnemy();
+        public OnPlayerDestroyEnemy OnEnemyDestroy;
 
         private bool _rotating;
         private Vector2 point;
+        private float cooldownDeltaTime;
 
         private Quaternion concurrentAngle;
         // Update is called once per frame
         void Update()
         {
+            cooldownDeltaTime += Time.deltaTime;
             if (_rotating)
             {
                 var angle = GetAngle();
                 var rotation = canion.transform.rotation;
                 var diff = Quaternion.Slerp(rotation, Quaternion.Euler(0, 0, angle), angleMore * Time.deltaTime);
                 var diffRotationZ = rotation.z - Quaternion.Euler(0, 0, angle).z;
-                if (Mathf.Abs(diffRotationZ) < min)
+                if (Mathf.Abs(diffRotationZ) < min && cooldownDeltaTime > cooldown)
                 {
                     FireBullet();
+                    cooldownDeltaTime = 0;
                 }
                 canion.transform.rotation = diff;
             }
@@ -38,7 +45,11 @@ namespace View
             if(bulletInstantiate.TryGetComponent<Bullet>(out var bulletComponent))
             {
                 var diff = point - (Vector2)canion.transform.position;
-                bulletComponent.Configure(point, diff.normalized);
+                bulletComponent.Configure(point, diff.normalized, pointToExit);
+                bulletComponent.OnEnemyDestroy += () =>
+                {
+                    OnEnemyDestroy?.Invoke();
+                };
             }
             _rotating = false;
         }

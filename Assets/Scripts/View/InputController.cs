@@ -10,13 +10,6 @@ namespace View
         // Update is called once per frame
         void Update()
         {
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                //point2.transform.position = new Vector3(touch.position.x, touch.position.y, 0);
-                //Fire(touch.position);
-            }
-
             if (Input.GetMouseButton(0))
             {
                 Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

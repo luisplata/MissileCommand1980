@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 8858419276721309491}
   - component: {fileID: 8592928177284630925}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: BulletPlayer
   m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,11 +246,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceMin: 0.01
-  impulseForce: 100
+  impulseForce: 400
   explosion: {fileID: 5059413697439958823}
   linesRender: {fileID: 8858419276721309491}
   goal: {x: 0, y: 0}
-  isPlayer: 0
+  isPlayer: 1
 --- !u!120 &8858419276721309491
 LineRenderer:
   m_ObjectHideFlags: 0

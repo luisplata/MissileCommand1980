@@ -11,15 +11,13 @@ namespace View
 
         private float _deltaTimeLocal;
         private bool _startCount;
+        private GameObject _originI;
 
+        public Tank.OnPlayerDestroyEnemy OnEnemyDestroy;
+        
         private void Start()
         {
             light.transform.localScale = Vector3.zero;
-        }
-
-        public void Configuration()
-        {
-            _startCount = true;
         }
 
         // Update is called once per frame
@@ -30,7 +28,22 @@ namespace View
             _deltaTimeLocal += Time.deltaTime;
             if (_deltaTimeLocal > explosionDuration)
             {
-                Destroy(gameObject);
+                Destroy(_originI);
+                Destroy(gameObject.transform.parent.transform.parent.gameObject);
+            }
+        }
+
+        public void Configuration(GameObject originI)
+        {
+            _startCount = true;
+            _originI = originI;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag("Respawn"))
+            {
+                OnEnemyDestroy?.Invoke();
             }
         }
     }
