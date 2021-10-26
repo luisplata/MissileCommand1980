@@ -1475,6 +1475,8 @@ MonoBehaviour:
   targetLeft: {fileID: 1736140502}
   targetRight: {fileID: 1044441734}
   missile: {fileID: 2054944642558497802, guid: f70297af44f286348aa9ef03dd220e46, type: 3}
+  minTime: 10
+  maxTime: 15
 --- !u!1 &772907525
 GameObject:
   m_ObjectHideFlags: 0

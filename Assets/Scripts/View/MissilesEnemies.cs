@@ -9,7 +9,15 @@ namespace View
         [SerializeField] private GameObject limitLeft, limitRight;
         [SerializeField] private GameObject targetLeft, targetRight;
         [SerializeField] private GameObject missile;
-    
+
+        [SerializeField] private float minTime, maxTime;
+        private float detaTimeLocal, time;
+
+        private void Start()
+        {
+            time = Random.Range(minTime, maxTime);
+        }
+
         public void CreateMissile()
         {
             var missileLocal = Instantiate(missile) as GameObject;
@@ -23,10 +31,10 @@ namespace View
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                CreateMissile();
-            }
+            detaTimeLocal += Time.deltaTime;
+            if (!(detaTimeLocal > time)) return;
+            time = Random.Range(minTime, maxTime);
+            CreateMissile();
         }
     }
 }
