@@ -1477,6 +1477,8 @@ MonoBehaviour:
   missile: {fileID: 2054944642558497802, guid: f70297af44f286348aa9ef03dd220e46, type: 3}
   minTime: 10
   maxTime: 15
+  detaTimeLocal: 0
+  time: 0
 --- !u!1 &772907525
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,10 +2270,10 @@ RectTransform:
   m_Father: {fileID: 1958691388}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -408.315}
-  m_SizeDelta: {x: 0, y: -816.629}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 31.21399}
+  m_SizeDelta: {x: 1600, y: 62.42798}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1565007161
 MonoBehaviour:
@@ -3086,7 +3088,7 @@ MonoBehaviour:
   min: 0.01
   bullet: {fileID: 2054944642558497802, guid: 2d98892d4d4d2d34abcbc1a0c5637933, type: 3}
   debuggerCustom: {fileID: 1958691389}
-  cooldown: 2
+  cooldown: 0.5
 --- !u!1 &1958691384
 GameObject:
   m_ObjectHideFlags: 0

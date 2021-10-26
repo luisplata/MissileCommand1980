@@ -11,7 +11,7 @@ namespace View
         [SerializeField] private GameObject missile;
 
         [SerializeField] private float minTime, maxTime;
-        private float detaTimeLocal, time;
+        [SerializeField] private float detaTimeLocal, time;
 
         private void Start()
         {
