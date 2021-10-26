@@ -22,6 +22,7 @@ jobs:
           - 2020.3.11f1
         targetPlatform:
           - Android
+          - Web
     steps:
       - uses: actions/checkout@v2
         with:
