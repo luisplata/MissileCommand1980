@@ -27,7 +27,7 @@ namespace View
                 Fire(worldPosition);
             }
 
-            if (Input.GetKeyDown(KeyCode.Backspace))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 menu.LoadScene(0);
             }
