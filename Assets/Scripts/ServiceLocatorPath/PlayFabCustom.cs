@@ -66,7 +66,7 @@ namespace ServiceLocatorPath
                     AddUserVirtualCurrencyRequest reqCurrenci = new AddUserVirtualCurrencyRequest()
                     {
                         Amount = 0,
-                        VirtualCurrency = "MK"
+                        VirtualCurrency = "MC"
                     };
                     PlayFabClientAPI.AddUserVirtualCurrency(reqCurrenci, result =>{},OnLoginFailure);
                 },OnLoginFailure);

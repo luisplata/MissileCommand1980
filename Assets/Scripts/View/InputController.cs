@@ -6,7 +6,7 @@ namespace View
     {
         [SerializeField] private GameObject point2;
 
-        [SerializeField] private Tank tank;
+        [SerializeField] private TankView tankView;
         [SerializeField] private MenuController menu;
 
         private Camera _camera;
@@ -35,7 +35,7 @@ namespace View
 
         private void Fire(Vector2 point)
         {
-            tank.Fire(point);
+            tankView.Fire(point);
         }
     }
 }

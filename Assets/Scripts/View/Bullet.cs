@@ -16,7 +16,7 @@ namespace View
         private GameObject originI;
         
         
-        public Tank.OnPlayerDestroyEnemy OnEnemyDestroy;
+        public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
 
         private void Awake()
         {
