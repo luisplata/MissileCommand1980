@@ -6,12 +6,12 @@ namespace View
 {
     public class UI : MonoBehaviour
     {
-        [SerializeField] private Tank tank;
+        [SerializeField] private TankView tankView;
         [SerializeField] private TextMeshProUGUI points;
         private int pointsCount;
         private void Start()
         {
-            tank.OnEnemyDestroy += OnEnemyDestroy;
+            tankView.OnEnemyDestroy += OnEnemyDestroy;
         }
 
         private void OnEnemyDestroy()

@@ -4,7 +4,7 @@ namespace View
 {
     public class InputAutomatic : MonoBehaviour
     {
-        [SerializeField] private Tank tank;
+        [SerializeField] private TankView tankView;
         [SerializeField] private GameObject center;
         [SerializeField] private float time;
         [SerializeField] private float ratio;
@@ -24,7 +24,7 @@ namespace View
                 _deltaTimeLocal = 0;
                 var position = (Random.insideUnitCircle * ratio) + (Vector2)center.transform.position;
                 Debug.Log($"position {position}");
-                tank.Fire(position);
+                tankView.Fire(position);
             }
         }
     }

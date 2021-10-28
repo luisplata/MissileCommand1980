@@ -4000,7 +4000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816f6415734f5e149b7ab4e75f8e9e06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tank: {fileID: 1932500471}
+  tankView: {fileID: 1932500471}
   points: {fileID: 1732695776}
 --- !u!1 &1583661568
 GameObject:
@@ -4710,7 +4710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   point2: {fileID: 1005416422}
-  tank: {fileID: 1932500471}
+  tankView: {fileID: 1932500471}
   menu: {fileID: 1874715740}
 --- !u!4 &1874715739
 Transform:

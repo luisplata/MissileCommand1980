@@ -16,7 +16,7 @@ namespace View
         private GameObject _originI;
         private Light2D light2D;
 
-        public Tank.OnPlayerDestroyEnemy OnEnemyDestroy;
+        public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
         
         private void Start()
         {
