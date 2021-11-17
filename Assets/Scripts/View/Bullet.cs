@@ -12,6 +12,7 @@ namespace View
         [SerializeField] private LineRenderer linesRender;
         [SerializeField]private Vector2 goal;
         [SerializeField] private bool isPlayer;
+        [SerializeField] private float damage;
         private Stack<GameObject> listOfChain;
         private GameObject originI;
         
@@ -72,9 +73,19 @@ namespace View
             explosion.Configuration(originI);
         }
 
+        private bool yaAplicoDanio;
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Respawn"))
+            if (other.CompareTag("Destruible"))
+            {
+                if (isPlayer) return;
+                if (other.TryGetComponent<ObjectDestroyer>(out var destruibleComponent) && !yaAplicoDanio)
+                {
+                    yaAplicoDanio = true;
+                    destruibleComponent.GetImpact(damage);   
+                }
+            }
+            else if (other.CompareTag("Respawn"))
             {
                 if (isPlayer)
                 {

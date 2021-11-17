@@ -13,19 +13,23 @@ namespace View
         [SerializeField] private GameObject bullet;
         [SerializeField] private DebuggerCustom debuggerCustom;
         [SerializeField] private float cooldown;
+        [SerializeField] private Animator _animator;
         private Tank _tank;
 
         private void Awake()
         {
             _tank = new Tank(this, canion.transform.position, cooldown, min);
+            _canUseTank = true;
         }
 
         public delegate void OnPlayerDestroyEnemy();
         public OnPlayerDestroyEnemy OnEnemyDestroy;
+        private bool _canUseTank;
 
         // Update is called once per frame
         void Update()
         {
+            if (!_canUseTank) return;
             _tank.AddDelta(Time.deltaTime);
             if (_tank.CanRotate())
             {
@@ -41,7 +45,8 @@ namespace View
             var diffRotationZ = rotation.z - Quaternion.Euler(0, 0, angle).z;
             if (_tank.CanShoot(Mathf.Abs(diffRotationZ)))
             {
-                FireBullet();//para futuro refactor
+                //FireBullet();//para futuro refactor
+                _animator.SetTrigger("fire");
             }
             canion.transform.rotation = diff;
         }
@@ -49,6 +54,7 @@ namespace View
         private void FireBullet()
         {
             //Aqui convertir en una factoria
+            //Ejecutar animacion de disparo para luego instanciar la bala
             var bulletInstantiate = Instantiate(bullet, pointToExit.transform.position, canion.transform.rotation);
             if(bulletInstantiate.TryGetComponent<Bullet>(out var bulletComponent))
             {
@@ -76,6 +82,11 @@ namespace View
         public bool IsLeft(Vector2 position, Vector2 point)
         {
             return Vector3.Cross(position, point).z > 0;
+        }
+
+        public void StopAllMovements()
+        {
+            _canUseTank = false;
         }
     }
 }
