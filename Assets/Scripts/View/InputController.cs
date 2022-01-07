@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace View
 {
@@ -13,8 +14,10 @@ namespace View
         [SerializeField] private List<HouseController> houses;
         [SerializeField] private UI ui;
         [SerializeField] private MissilesEnemies missilesCreator;
+        [SerializeField] private Button again, exit;
 
         private Camera _camera;
+        private bool _usage;
 
         // Update is called once per frame
         private void Start()
@@ -28,6 +31,16 @@ namespace View
             
             ui.GameOver += GameOver;
             ui.AumentoDeMissiles += AumentoDeMissiles;
+            
+            again.onClick.AddListener(() =>
+            {
+                GetComponent<MenuController>().LoadScene(0);
+            });
+            exit.onClick.AddListener(() =>
+            {
+                GetComponent<MenuController>().ExitGame();
+            });
+            _usage = true;
         }
 
         private void AumentoDeMissiles()
@@ -40,6 +53,7 @@ namespace View
             missilesCreator.StopCreatingMissile();
             tankView.StopAllMovements();
             ui.ShowGameOverAndOptions();
+            _usage = false;
         }
 
         private void OnCollisionFromBullet(float damage)
@@ -50,6 +64,7 @@ namespace View
 
         void Update()
         {
+            if (!_usage) return;
             if (Input.GetMouseButton(0))
             {
                 Vector3 worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);

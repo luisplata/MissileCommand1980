@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace View
 {
@@ -13,7 +14,7 @@ namespace View
         [SerializeField] private GameObject panelGameOver;
         public OnGameOver GameOver;
         public OnAumentoDeMissiles AumentoDeMissiles;
-        private int pointsCount;
+        private int _pointsCount;
         public delegate void OnGameOver();
         public delegate void OnAumentoDeMissiles();
 
@@ -21,17 +22,18 @@ namespace View
         {
             tankView.OnEnemyDestroy += OnEnemyDestroy;
             UpdateUi();
-            points.text = $"{pointsCount}";
+            points.text = $"{_pointsCount}";
+
         }
 
         private void OnEnemyDestroy()
         {
-            pointsCount++;
-            if (pointsCount % cadaCuantoAumentanLosMisiles == 0)
+            _pointsCount++;
+            if (_pointsCount % cadaCuantoAumentanLosMisiles == 0)
             {
                 AumentoDeMissiles?.Invoke();   
             }
-            points.text = $"{pointsCount}";
+            points.text = $"{_pointsCount}";
         }
 
         public void ApllyDamange(float damage)
