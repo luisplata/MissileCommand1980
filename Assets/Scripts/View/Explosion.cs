@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
+
 
 namespace View
 {
@@ -14,15 +14,15 @@ namespace View
         private float _deltaTimeLocal;
         private bool _startCount;
         private GameObject _originI;
-        private Light2D light2D;
+        private UnityEngine.Rendering.Universal.Light2D light2D;
 
         public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
         
         private void Start()
         {
             light.transform.localScale = Vector3.zero;
-            light2D = light.GetComponent<Light2D>();
-            if (light2D.lightType == Light2D.LightType.Point)
+            light2D = light.GetComponent<UnityEngine.Rendering.Universal.Light2D>();
+            if (light2D.lightType == UnityEngine.Rendering.Universal.Light2D.LightType.Point)
             {
                 light2D.pointLightOuterRadius = 0;
             }

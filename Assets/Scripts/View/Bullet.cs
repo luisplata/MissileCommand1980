@@ -69,7 +69,7 @@ namespace View
         }
         private void Explosion()
         {
-            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
             explosion.Configuration(originI);
         }
 
