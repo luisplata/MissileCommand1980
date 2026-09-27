@@ -32,11 +32,22 @@ namespace View
                 var missileLocal = Instantiate(missile) as GameObject;
                 var enemyMissile = missileLocal.GetComponent<Bullet>();
                 var position = new Vector2(Random.Range(limitLeft.transform.position.x, limitRight.transform.position.x), limitLeft.transform.position.y);
-                var target = new Vector2(Random.Range(targetLeft.transform.position.x, targetRight.transform.position.x), targetLeft.transform.position.y);
+                var target = PickCityTarget();
                 Debug.Log($"position {position} target {target}");
                 missileLocal.transform.position = position;
                 enemyMissile.Configure(target, (target - position).normalized, missileLocal);
             }
+        }
+
+        private Vector2 PickCityTarget()
+        {
+            var houses = FindObjectsByType<HouseController>(FindObjectsSortMode.None);
+            if (houses.Length > 0)
+            {
+                var house = houses[Random.Range(0, houses.Length)];
+                return house.transform.position;
+            }
+            return new Vector2(Random.Range(targetLeft.transform.position.x, targetRight.transform.position.x), targetLeft.transform.position.y);
         }
 
         private void Update()
