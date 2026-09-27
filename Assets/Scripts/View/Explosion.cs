@@ -35,6 +35,7 @@ namespace View
         private GameObject _originI;
         private UnityEngine.Rendering.Universal.Light2D light2D;
         private SpriteRenderer _spriteRenderer;
+        private float _ancestorScale = 1f;
 
         public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
         
@@ -42,7 +43,10 @@ namespace View
         {
             _spriteRenderer = light.GetComponent<SpriteRenderer>();
             _spriteRenderer.color = burstColor;
-            light.transform.localScale = Vector3.one * startScale;
+            _ancestorScale = transform.parent != null && transform.parent.lossyScale.x > 0f
+                ? transform.parent.lossyScale.x
+                : 1f;
+            light.transform.localScale = Vector3.one * (startScale / _ancestorScale);
             light2D = light.GetComponent<UnityEngine.Rendering.Universal.Light2D>();
             if (light2D.lightType == UnityEngine.Rendering.Universal.Light2D.LightType.Point)
             {
@@ -55,9 +59,9 @@ namespace View
         void Update()
         {
             if (!_startCount) return;
-            var nextScale = light.transform.localScale.x + (explosionIncreasing * Time.deltaTime);
-            if (maxScale > 0 && nextScale > maxScale) nextScale = maxScale;
-            light.transform.localScale = Vector3.one * nextScale;
+            var worldScale = (light.transform.localScale.x * _ancestorScale) + (explosionIncreasing * Time.deltaTime);
+            if (maxScale > 0 && worldScale > maxScale) worldScale = maxScale;
+            light.transform.localScale = Vector3.one * (worldScale / _ancestorScale);
             var nextRadius = light2D.pointLightOuterRadius + (explosionIncreasingLight * Time.deltaTime);
             var radiusCap = maxLightRadius > 0 ? maxLightRadius : maxScale;
             if (radiusCap > 0 && nextRadius > radiusCap) nextRadius = radiusCap;

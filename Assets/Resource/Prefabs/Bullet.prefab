@@ -127,8 +127,8 @@ MonoBehaviour:
   explosionDuration: 0.5
   fadeDelay: 0.15
   fadeDuration: 0.35
-  explosionIncreasing: 30
-  maxScale: 15
+  explosionIncreasing: 3
+  maxScale: 1.5
   startScale: 0
   explosionIncreasingLight: 4
   lightStartRadius: 0
