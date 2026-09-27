@@ -125,8 +125,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 527511981645066115}
   explosionDuration: 2
-  explosionIncreasing: 30
+  explosionIncreasing: 4
   explosionIncreasingLight: 4
+  maxScale: 4
+  fadeDelay: 0.5
+  fadeDuration: 1.5
 --- !u!114 &4319552397943306821
 MonoBehaviour:
   m_ObjectHideFlags: 0

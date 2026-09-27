@@ -127,6 +127,9 @@ MonoBehaviour:
   explosionDuration: 0.5
   explosionIncreasing: 30
   explosionIncreasingLight: 4
+  maxScale: 15
+  fadeDelay: 0.15
+  fadeDuration: 0.35
 --- !u!114 &1656845952807779213
 MonoBehaviour:
   m_ObjectHideFlags: 0
