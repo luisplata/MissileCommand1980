@@ -6,33 +6,49 @@ namespace View
 {
     public class Explosion : MonoBehaviour
     {
+        [Header("Referencia")]
         [SerializeField] private GameObject light;
+
+        [Header("Fases (tiempos)")]
         [SerializeField] private float explosionDuration;
-        [SerializeField] private float explosionIncreasing;
-        [SerializeField] private float explosionIncreasingLight;
-        [SerializeField] private float maxScale;
         [SerializeField] private float fadeDelay;
         [SerializeField] private float fadeDuration;
+
+        [Header("Nube (escala)")]
+        [SerializeField] private float explosionIncreasing;
+        [SerializeField] private float maxScale;
+        [SerializeField] private float startScale;
+
+        [Header("Luz")]
+        [SerializeField] private float explosionIncreasingLight;
+        [SerializeField] private float lightStartRadius;
+        [SerializeField] private float maxLightRadius;
+        [SerializeField] private float lightStartIntensity;
+        [SerializeField] private float lightEndIntensity;
+
+        [Header("Color")]
+        [SerializeField] private Color burstColor = Color.white;
+        [SerializeField] private Color cloudColor = new Color(0.5f, 0.5f, 0.5f, 0f);
 
         private float _deltaTimeLocal;
         private bool _startCount;
         private GameObject _originI;
         private UnityEngine.Rendering.Universal.Light2D light2D;
         private SpriteRenderer _spriteRenderer;
-        private Color _originalColor;
 
         public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
         
         private void Start()
         {
             _spriteRenderer = light.GetComponent<SpriteRenderer>();
-            _originalColor = _spriteRenderer.color;
-            light.transform.localScale = Vector3.zero;
+            _spriteRenderer.color = burstColor;
+            light.transform.localScale = Vector3.one * startScale;
             light2D = light.GetComponent<UnityEngine.Rendering.Universal.Light2D>();
             if (light2D.lightType == UnityEngine.Rendering.Universal.Light2D.LightType.Point)
             {
-                light2D.pointLightOuterRadius = 0;
+                light2D.pointLightOuterRadius = lightStartRadius;
             }
+            light2D.intensity = lightStartIntensity;
         }
 
         // Update is called once per frame
@@ -43,7 +59,8 @@ namespace View
             if (maxScale > 0 && nextScale > maxScale) nextScale = maxScale;
             light.transform.localScale = Vector3.one * nextScale;
             var nextRadius = light2D.pointLightOuterRadius + (explosionIncreasingLight * Time.deltaTime);
-            if (maxScale > 0 && nextRadius > maxScale) nextRadius = maxScale;
+            var radiusCap = maxLightRadius > 0 ? maxLightRadius : maxScale;
+            if (radiusCap > 0 && nextRadius > radiusCap) nextRadius = radiusCap;
             light2D.pointLightOuterRadius = nextRadius;
             ApplyPhaseFade();
             _deltaTimeLocal += Time.deltaTime;
@@ -58,8 +75,8 @@ namespace View
         {
             if (fadeDuration <= 0 || _deltaTimeLocal < fadeDelay) return;
             var t = Mathf.InverseLerp(fadeDelay, fadeDelay + fadeDuration, _deltaTimeLocal);
-            _spriteRenderer.color = Color.Lerp(_originalColor, new Color(0.5f, 0.5f, 0.5f, 0f), t);
-            light2D.intensity = Mathf.Lerp(1f, 0f, t);
+            _spriteRenderer.color = Color.Lerp(burstColor, cloudColor, t);
+            light2D.intensity = Mathf.Lerp(lightStartIntensity, lightEndIntensity, t);
         }
 
         public void Configuration(GameObject originI)

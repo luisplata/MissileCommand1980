@@ -125,11 +125,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 527511981645066115}
   explosionDuration: 0.5
-  explosionIncreasing: 30
-  explosionIncreasingLight: 4
-  maxScale: 15
   fadeDelay: 0.15
   fadeDuration: 0.35
+  explosionIncreasing: 30
+  maxScale: 15
+  startScale: 0
+  explosionIncreasingLight: 4
+  lightStartRadius: 0
+  maxLightRadius: 0
+  lightStartIntensity: 1
+  lightEndIntensity: 0
+  burstColor: {r: 1, g: 1, b: 1, a: 1}
+  cloudColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
 --- !u!114 &1656845952807779213
 MonoBehaviour:
   m_ObjectHideFlags: 0
