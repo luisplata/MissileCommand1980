@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 527511981645066115}
-  explosionDuration: 0.5
+  explosionDuration: 2
   explosionIncreasing: 30
   explosionIncreasingLight: 4
 --- !u!114 &4319552397943306821
