@@ -87,6 +87,12 @@ namespace View
             }
             else if (other.CompareTag("Respawn"))
             {
+                // Ignorar el propio bando: los bullets del player no deben detonar entre sí
+                // (ambos comparten la tag "Respawn", que también identifica al enemigo).
+                if (other.TryGetComponent<Bullet>(out var otherBullet) && otherBullet.isPlayer == isPlayer)
+                {
+                    return;
+                }
                 if (isPlayer)
                 {
                     OnEnemyDestroy?.Invoke();    
@@ -94,6 +100,11 @@ namespace View
             }
             else
             {
+                // La nube de explosión (Untagged) de un bullet amigo no debe detonar este bullet.
+                if (other.GetComponentInParent<Bullet>() is Bullet cloudOwner && cloudOwner.isPlayer == isPlayer)
+                {
+                    return;
+                }
                 explosion.OnEnemyDestroy += () =>
                 {
                     if (isPlayer)
