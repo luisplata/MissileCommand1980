@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,12 +30,12 @@ namespace View
                 house.OnCollisionFromBullet += OnCollisionFromBullet;
             }
             
-            ui.GameOver += GameOver;
+            RunSession.Current.RunOver += GameOver;
             ui.AumentoDeMissiles += AumentoDeMissiles;
             
             again.onClick.AddListener(() =>
             {
-                GetComponent<MenuController>().LoadScene(0);
+                GetComponent<MenuController>().LoadScene(MenuController.MainMenuScene);
             });
             exit.onClick.AddListener(() =>
             {
@@ -75,7 +76,7 @@ namespace View
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                menu.LoadScene(0);
+                menu.LoadScene(MenuController.MainMenuScene);
             }
         }
 

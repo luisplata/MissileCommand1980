@@ -1,4 +1,4 @@
-using System;
+using Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,47 +9,42 @@ namespace View
     {
         [SerializeField] private TankView tankView;
         [SerializeField] private TextMeshProUGUI points, lifeUi;
-        [SerializeField] private float life;
-        [SerializeField] private float cadaCuantoAumentanLosMisiles;
         [SerializeField] private GameObject panelGameOver;
-        public OnGameOver GameOver;
         public OnAumentoDeMissiles AumentoDeMissiles;
-        private int _pointsCount;
-        public delegate void OnGameOver();
         public delegate void OnAumentoDeMissiles();
+        private RunSession _runSession;
+
+        private void Awake()
+        {
+            RunSession.Current = _runSession = new RunSession(1000f, 10);
+        }
 
         private void Start()
         {
             tankView.OnEnemyDestroy += OnEnemyDestroy;
             UpdateUi();
-            points.text = $"{_pointsCount}";
-
+            points.text = $"{_runSession.Score}";
         }
 
         private void OnEnemyDestroy()
         {
-            _pointsCount++;
-            if (_pointsCount % cadaCuantoAumentanLosMisiles == 0)
+            _runSession.AddScore();
+            if (_runSession.ShouldAddMissile())
             {
-                AumentoDeMissiles?.Invoke();   
+                AumentoDeMissiles?.Invoke();
             }
-            points.text = $"{_pointsCount}";
+            points.text = $"{_runSession.Score}";
         }
 
         public void ApllyDamange(float damage)
         {
-            if (life <= 0) return;
-            life -= damage;
+            _runSession.ApplyDamage(damage);
             UpdateUi();
         }
 
         private void UpdateUi()
         {
-            lifeUi.text = $"{life}";
-            if (life <= 0)
-            {
-                GameOver?.Invoke();
-            }
+            lifeUi.text = $"{_runSession.Life}";
         }
 
         public void ShowGameOverAndOptions()
