@@ -1,4 +1,4 @@
-using System;
+using Model;
 using UnityEngine;
 
 namespace View
@@ -9,7 +9,7 @@ namespace View
         {
             if (other.CompareTag("Respawn"))
             {
-                Debug.Log("Una vida menos");
+                Debug.Log($"Una vida menos. Vida: {RunSession.Current.Life}");
             }
         }
     }
