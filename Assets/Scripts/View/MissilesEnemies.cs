@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -21,6 +22,7 @@ namespace View
         {
             time = Random.Range(minTime, maxTime);
             _canCreateMissile = true;
+            Debug.Log($"Wave {RunSession.Current.Wave}");
         }
 
         public void CreateMissile()
@@ -33,7 +35,7 @@ namespace View
                 var target = new Vector2(Random.Range(targetLeft.transform.position.x, targetRight.transform.position.x), targetLeft.transform.position.y);
                 Debug.Log($"position {position} target {target}");
                 missileLocal.transform.position = position;
-                enemyMissile.Configure(target, (target - (Vector2)transform.position).normalized, missileLocal);
+                enemyMissile.Configure(target, (target - position).normalized, missileLocal);
             }
         }
 
