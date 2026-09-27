@@ -51,7 +51,7 @@ namespace View
             canion.transform.rotation = diff;
         }
 
-        private void FireBullet()
+        public void FireBullet()
         {
             //Aqui convertir en una factoria
             //Ejecutar animacion de disparo para luego instanciar la bala
