@@ -6527,7 +6527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   point2: {fileID: 1005416422}
-  tankView: {fileID: 1932500471}
+  baseManager: {fileID: 2000000007}
   menu: {fileID: 1874715740}
   floor: {fileID: 807506729}
   ui: {fileID: 1565007163}

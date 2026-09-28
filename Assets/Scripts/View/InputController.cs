@@ -8,7 +8,7 @@ namespace View
     {
         [SerializeField] private GameObject point2;
 
-        [SerializeField] private TankView tankView;
+        [SerializeField] private BaseManager baseManager;
         [SerializeField] private MenuController menu;
         [SerializeField] private FloorController floor;
         [SerializeField] private UI ui;
@@ -40,7 +40,7 @@ namespace View
         private void GameOver()
         {
             missilesCreator.StopCreatingMissile();
-            tankView.StopAllMovements();
+            baseManager.StopAll();
             ui.ShowGameOverAndOptions();
             _usage = false;
         }
@@ -75,7 +75,7 @@ namespace View
 
         private void Fire(Vector2 point)
         {
-            tankView.Fire(point);
+            baseManager.TryFireClosestTo(point);
         }
     }
 }
