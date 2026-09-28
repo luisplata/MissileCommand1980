@@ -105,7 +105,39 @@ namespace View
             enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
             enemyMissile.SetEnemyType(PopNextType());
             enemyMissile.Configure(target, (target - position).normalized, missileLocal);
+            enemyMissile.SplitRequested += HandleMirvSplit;
+            enemyMissile.DodgeRequested += HandleInteligenteDodge;
             _activeEnemies.Add(enemyMissile);
+        }
+
+        // M1b-1 (MV-1/MV-2): el MIRV padre sale de _activeEnemies y genera 3
+        // warheads (Normal-warhead: 40 pts, sin split ni esquiva) hacia ciudades
+        // vivas. Cada warhead entra a _activeEnemies → el guard de completitud
+        // (_spawned>=_totalCount && _activeEnemies.Count==0) espera a los hijos.
+        private void HandleMirvSplit(Bullet parent)
+        {
+            _activeEnemies.Remove(parent);
+            var speed = parent.GetComponent<Rigidbody2D>().linearVelocity.magnitude;
+            var childPrefab = parent.MirvChildPrefab != null ? parent.MirvChildPrefab : missile.GetComponent<Bullet>();
+            for (var i = 0; i < 3; i++)
+            {
+                var warhead = Instantiate(childPrefab);
+                warhead.transform.position = parent.transform.position;
+                warhead.SetEnemyType(EnemyType.Warhead);
+                var target = PickCityTarget();
+                var direction = (target - (Vector2)warhead.transform.position).normalized;
+                warhead.Configure(target, direction, warhead.gameObject);
+                // Copia la magnitud de velocidad del padre en la nueva dirección
+                // (preserva el multiplicador S5 x1.2 y el feel de SlowEnemies).
+                warhead.GetComponent<Rigidbody2D>().linearVelocity = direction * speed;
+                _activeEnemies.Add(warhead);
+            }
+        }
+
+        // M1b-1 (IN-1): el inteligente re-apunta a una ciudad viva tras esquivar.
+        private void HandleInteligenteDodge(Bullet bullet)
+        {
+            bullet.ReAim(PickCityTarget());
         }
 
         private Vector2 PickCityTarget()
