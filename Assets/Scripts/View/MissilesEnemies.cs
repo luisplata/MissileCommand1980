@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Model;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace View
         [SerializeField] private List<string> cantidadDeMisiles;
         
         private bool _canCreateMissile;
+        private readonly List<Bullet> _activeEnemies = new();
 
         private void Start()
         {
@@ -36,6 +38,7 @@ namespace View
                 Debug.Log($"position {position} target {target}");
                 missileLocal.transform.position = position;
                 enemyMissile.Configure(target, (target - position).normalized, missileLocal);
+                _activeEnemies.Add(enemyMissile);
             }
         }
 
@@ -68,6 +71,36 @@ namespace View
         public void AddOneMoreMissile()
         {
             cantidadDeMisiles.Add("OtroMisile");
+        }
+
+        public void SlowEnemies(float factor, float duration)
+        {
+            StopAllCoroutines();
+            StartCoroutine(SlowEnemiesCoroutine(factor, duration));
+        }
+
+        private IEnumerator SlowEnemiesCoroutine(float factor, float duration)
+        {
+            _activeEnemies.RemoveAll(m => m == null);
+            var original = new Dictionary<Bullet, Vector2>();
+            foreach (var enemy in _activeEnemies)
+            {
+                var rigidbody = enemy.GetComponent<Rigidbody2D>();
+                original[enemy] = rigidbody.linearVelocity;
+                rigidbody.linearVelocity *= factor;
+            }
+
+            yield return new WaitForSecondsRealtime(duration);
+
+            foreach (var pair in original)
+            {
+                if (pair.Key == null) continue;
+                var rigidbody = pair.Key.GetComponent<Rigidbody2D>();
+                if (rigidbody != null)
+                {
+                    rigidbody.linearVelocity = pair.Value;
+                }
+            }
         }
     }
 }

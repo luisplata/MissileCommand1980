@@ -14,6 +14,7 @@ namespace View
         [SerializeField] private DebuggerCustom debuggerCustom;
         [SerializeField] private float cooldown;
         [SerializeField] private Animator _animator;
+        [SerializeField] private int bulletsPerShot = 1;
         private Tank _tank;
 
         private void Awake()
@@ -55,18 +56,31 @@ namespace View
         {
             //Aqui convertir en una factoria
             //Ejecutar animacion de disparo para luego instanciar la bala
-            var bulletInstantiate = Instantiate(bullet, pointToExit.transform.position, canion.transform.rotation);
-            if(bulletInstantiate.TryGetComponent<Bullet>(out var bulletComponent))
+            for (var i = 0; i < bulletsPerShot; i++)
             {
-                //Aqui convertir en un builder
-                bulletComponent.Configure(_tank.GetGoal(), _tank.GetDirectionNormalize(), pointToExit);
-                bulletComponent.OnEnemyDestroy += () =>
+                var bulletInstantiate = Instantiate(bullet, pointToExit.transform.position, canion.transform.rotation);
+                if (bulletInstantiate.TryGetComponent<Bullet>(out var bulletComponent))
                 {
-                    OnEnemyDestroy?.Invoke();
-                };
+                    //Aqui convertir en un builder
+                    bulletComponent.Configure(_tank.GetGoal(), _tank.GetDirectionNormalize(), pointToExit);
+                    bulletComponent.OnEnemyDestroy += () =>
+                    {
+                        OnEnemyDestroy?.Invoke();
+                    };
+                }
             }
 
             _tank.StopRotating();
+        }
+
+        public void SetBulletsPerShot(int count)
+        {
+            bulletsPerShot = count;
+        }
+
+        public void MultiplyCooldown(float factor)
+        {
+            _tank.CooldownMultiplier *= factor;
         }
         
         public void Fire(Vector2 vector2)

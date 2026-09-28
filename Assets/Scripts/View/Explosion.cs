@@ -89,6 +89,11 @@ namespace View
             _originI = originI;
         }
 
+        public void MultiplyMaxScale(float factor)
+        {
+            maxScale *= factor;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Respawn"))

@@ -65,6 +65,11 @@ namespace View
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                menu.LoadScene(MenuController.MainMenuScene);
+            }
+
             if (!_usage) return;
             if (Input.GetMouseButton(0))
             {
@@ -73,11 +78,11 @@ namespace View
                 point2.transform.position = worldPosition;
                 Fire(worldPosition);
             }
+        }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                menu.LoadScene(MenuController.MainMenuScene);
-            }
+        public void SetUsage(bool usage)
+        {
+            _usage = usage;
         }
 
         private void Fire(Vector2 point)

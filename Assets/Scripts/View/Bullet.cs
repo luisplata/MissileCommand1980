@@ -35,6 +35,11 @@ namespace View
             listOfChain.Push(gameObject);
         }
 
+        public void MultiplyImpulseForce(float factor)
+        {
+            impulseForce *= factor;
+        }
+
         private void Update()
         {
             if ((goal - (Vector2)transform.position).sqrMagnitude < distanceMin)
