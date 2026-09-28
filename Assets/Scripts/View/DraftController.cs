@@ -36,7 +36,7 @@ namespace View
             { CardType.Propulsores, "Interceptor +20% vel. y apuntado más rápido" }
         };
 
-        [SerializeField] private TankView tankView;
+        [SerializeField] private BaseManager baseManager;
         [SerializeField] private MissilesEnemies missilesEnemies;
         [SerializeField] private InputController inputController;
         [SerializeField] private GameObject bulletPrefab;
@@ -105,17 +105,17 @@ namespace View
                     bulletPrefab.GetComponentInChildren<Explosion>().MultiplyMaxScale(1.25f);
                     break;
                 case CardType.Recarga:
-                    tankView.MultiplyCooldown(0.8f);
+                    baseManager.ApplyToAll(b => b.MultiplyCooldown(0.8f));
                     break;
                 case CardType.Doble:
-                    tankView.SetBulletsPerShot(2);
+                    baseManager.ApplyToAll(b => b.SetBulletsPerShot(2));
                     break;
                 case CardType.Lenta:
                     missilesEnemies.SlowEnemies(0.5f, 3f);
                     break;
                 case CardType.Propulsores:
                     bulletPrefab.GetComponent<Bullet>().MultiplyImpulseForce(1.2f);
-                    tankView.MultiplyAimSpeed(1.2f);
+                    baseManager.ApplyToAll(b => b.MultiplyAimSpeed(1.2f));
                     break;
             }
         }

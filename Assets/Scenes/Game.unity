@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 882b0e878fd8edd45b09ea4eb676a145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::View.DraftController
-  tankView: {fileID: 1932500471}
+  baseManager: {fileID: 2000000007}
   missilesEnemies: {fileID: 701043746}
   inputController: {fileID: 1874715738}
   bulletPrefab: {fileID: 2054944642558497802, guid: 2d98892d4d4d2d34abcbc1a0c5637933, type: 3}
@@ -5635,11 +5635,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816f6415734f5e149b7ab4e75f8e9e06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tankView: {fileID: 1932500471}
+  baseManager: {fileID: 2000000007}
   points: {fileID: 1732695776}
   lifeUi: {fileID: 870170140}
   panelGameOver: {fileID: 1565689915}
   gameOverTitle: {fileID: 2070516087}
+  ammoText: {fileID: 2000000010}
 --- !u!1 &1565689915
 GameObject:
   m_ObjectHideFlags: 0

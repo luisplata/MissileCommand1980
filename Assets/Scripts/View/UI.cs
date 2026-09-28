@@ -7,8 +7,9 @@ namespace View
 {
     public class UI : MonoBehaviour
     {
-        [SerializeField] private TankView tankView;
+        [SerializeField] private BaseManager baseManager;
         [SerializeField] private TextMeshProUGUI points, lifeUi;
+        [SerializeField] private TextMeshProUGUI ammoText;
         [SerializeField] private GameObject panelGameOver;
         [SerializeField] private TextMeshProUGUI gameOverTitle;
         private RunSession _runSession;
@@ -20,10 +21,17 @@ namespace View
 
         private void Start()
         {
-            tankView.OnEnemyDestroy += OnEnemyDestroy;
+            baseManager.OnEnemyDestroy += OnEnemyDestroy;
+            baseManager.AmmoChanged += UpdateAmmo;
             _runSession.CityDied += UpdateUi;
             UpdateUi();
+            UpdateAmmo();
             points.text = $"{_runSession.Score}";
+        }
+
+        private void UpdateAmmo()
+        {
+            ammoText.text = $"Munición: {baseManager.TotalAmmo}";
         }
 
         private void OnEnemyDestroy(int gainedPoints)
