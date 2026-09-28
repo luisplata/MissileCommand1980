@@ -142,9 +142,20 @@ namespace View
                 }
             }
 
-            if ((goal - (Vector2)transform.position).sqrMagnitude < distanceMin)
+            // Arrival fix (bases-arrival-fix): with AddForce the bullet accelerates and can
+            // cross the goal BETWEEN frames — the sqrMagnitude < distanceMin check (prefab
+            // distanceMin 0.01, a nearly-zero trigger radius) then misses because the bullet
+            // is already PAST the goal, so it never explodes and flies forever (user report:
+            // "se van de largo"). Real fix: explode as soon as the bullet stops APPROACHING
+            // the goal (dot >= 0 = at or past closest approach). Velocity epsilon guards the
+            // edge of a bullet that stopped far from its goal: ~0 velocity must NOT explode.
+            var toGoal = (Vector2)transform.position - goal;
+            var velocity = GetComponent<Rigidbody2D>().linearVelocity;
+            var movingAway = velocity.sqrMagnitude > 0.01f && Vector2.Dot(velocity, toGoal) >= 0f;
+            if (movingAway || (goal - (Vector2)transform.position).sqrMagnitude < distanceMin)
             {
                 Explosion();
+                return; // dead bullet: skip stale PrintLine and re-triggering
             }
 
             PrintLine();
