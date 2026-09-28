@@ -240,6 +240,12 @@ MonoBehaviour:
   - {fileID: 1326703845}
   - {fileID: 723651151}
   - {fileID: 1635387420}
+  pool:
+  - {fileID: 11400000, guid: be3c1ebc8853dc64881178603310a333, type: 2}
+  - {fileID: 11400000, guid: b7479df78b579e349a0e44a071e62870, type: 2}
+  - {fileID: 11400000, guid: 230f471146ef31b4987ce2edb896c246, type: 2}
+  - {fileID: 11400000, guid: 115b1ffe9523bce4a9992e63db8dc4ad, type: 2}
+  - {fileID: 11400000, guid: 32a2b3d7746e4604f942d851c2850605, type: 2}
 --- !u!4 &164467283
 Transform:
   m_ObjectHideFlags: 0
