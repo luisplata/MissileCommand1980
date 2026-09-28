@@ -27,6 +27,15 @@ namespace View
             { CardType.Propulsores, "Propulsores" }
         };
 
+        private static readonly Dictionary<CardType, string> CardDescriptions = new Dictionary<CardType, string>
+        {
+            { CardType.RadioMas, "Nube de explosión +25%" },
+            { CardType.Recarga, "Cooldown del cañón -20%" },
+            { CardType.Doble, "2 misiles por disparo" },
+            { CardType.Lenta, "Misiles enemigos -50% por 3s" },
+            { CardType.Propulsores, "Interceptor +20% vel. y apuntado más rápido" }
+        };
+
         [SerializeField] private TankView tankView;
         [SerializeField] private MissilesEnemies missilesEnemies;
         [SerializeField] private InputController inputController;
@@ -57,7 +66,7 @@ namespace View
             }
             for (var i = 0; i < cardButtons.Length; i++)
             {
-                cardLabels[i].text = CardCatalog[_currentCards[i]];
+                cardLabels[i].text = $"{CardCatalog[_currentCards[i]]}\n<size=55%>{CardDescriptions[_currentCards[i]]}</size>";
             }
             panelDraft.SetActive(true);
             Time.timeScale = 0f;
