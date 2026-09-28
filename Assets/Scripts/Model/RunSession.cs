@@ -10,6 +10,7 @@ namespace Model
 
         public float Life { get; private set; }
         public int Score { get; private set; }
+        public int Kills { get; private set; }
         public int Wave { get; private set; }
 
         private readonly float _milestoneEvery;
@@ -18,6 +19,7 @@ namespace Model
         {
             Life = life;
             Score = 0;
+            Kills = 0;
             Wave = 1;
             _milestoneEvery = milestoneEvery;
             RunStarted?.Invoke();
@@ -36,6 +38,11 @@ namespace Model
         public void AddScore()
         {
             Score++;
+        }
+
+        public void AddKill()
+        {
+            Kills++;
         }
 
         public bool ShouldAddMissile()

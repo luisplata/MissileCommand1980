@@ -9,7 +9,9 @@ namespace Model
         private readonly Vector2 _cannon;
         private readonly float _cooldown;
         private readonly float _min;
-        
+
+        public float CooldownMultiplier = 1f;
+
         private bool _rotating;
         private Vector2 _point;
         private float _cooldownDeltaTime;
@@ -61,7 +63,7 @@ namespace Model
 
         public bool CanShoot(float diffRotationZ)
         {
-            var can= diffRotationZ < _min && _cooldownDeltaTime > _cooldown;
+            var can= diffRotationZ < _min && _cooldownDeltaTime > _cooldown * CooldownMultiplier;
             if (can)
             {
                 _cooldownDeltaTime = 0;
