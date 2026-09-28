@@ -13,6 +13,7 @@ namespace View
         [SerializeField] private GameObject missile;
 
         private bool _canCreateMissile;
+        private bool _sectorActive;
         private readonly List<Bullet> _activeEnemies = new();
 
         private void Start()
@@ -24,6 +25,7 @@ namespace View
         public void StartSector(int sector)
         {
             if (!_canCreateMissile) return;
+            _sectorActive = true;
             var config = SectorConfigs.All[sector - 1];
             Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles");
             for (var i = 0; i < config.TotalCount; i++)
@@ -63,8 +65,9 @@ namespace View
         private void Update()
         {
             _activeEnemies.RemoveAll(m => m == null);
-            if (_activeEnemies.Count == 0)
+            if (_sectorActive && _activeEnemies.Count == 0)
             {
+                _sectorActive = false;
                 RunSession.Current.CompleteSector();
             }
         }
