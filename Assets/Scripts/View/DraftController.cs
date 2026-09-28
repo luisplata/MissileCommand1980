@@ -106,6 +106,7 @@ namespace View
                     break;
                 case CardType.Propulsores:
                     bulletPrefab.GetComponent<Bullet>().MultiplyImpulseForce(1.2f);
+                    tankView.MultiplyAimSpeed(1.2f);
                     break;
             }
         }

@@ -82,7 +82,12 @@ namespace View
         {
             _tank.CooldownMultiplier *= factor;
         }
-        
+
+        public void MultiplyAimSpeed(float factor)
+        {
+            angleMore *= factor;
+        }
+
         public void Fire(Vector2 vector2)
         {
             _tank.Rotate(vector2);
