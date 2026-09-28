@@ -103,6 +103,9 @@ namespace View
             }
             _lastShotTime = float.NegativeInfinity;
             AmmoChanged?.Invoke();
+            // Reload feedback (bases-arrival-fix): flash every tank sprite so the player
+            // SEES the refill (SectorStarted). Code-only.
+            ApplyToAll(b => b.FlashReload());
         }
 
         public void ApplyToAll(Action<TankView> a)

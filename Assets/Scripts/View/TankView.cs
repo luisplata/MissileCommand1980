@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Model;
 using UnityEngine;
 
@@ -16,11 +17,14 @@ namespace View
         [SerializeField] private Animator _animator;
         [SerializeField] private int bulletsPerShot = 1;
         private Tank _tank;
+        private SpriteRenderer _spriteRenderer;
+        private Coroutine _flashRoutine;
 
         private void Awake()
         {
             _tank = new Tank(this, canion.transform.position, cooldown, min);
             _canUseTank = true;
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         public delegate void OnPlayerDestroyEnemy(int points);
@@ -106,6 +110,30 @@ namespace View
         public void StopAllMovements()
         {
             _canUseTank = false;
+        }
+
+        // Reload feedback (bases-arrival-fix): BaseManager.RefillAll (on SectorStarted) calls
+        // this on every base so the player SEES that ammo was reloaded. Flashes the tank
+        // sprite 3 times over ~0.6s. Code-only — the Tank prefab root already has a
+        // SpriteRenderer; no new assets, no prefab edits.
+        public void FlashReload()
+        {
+            if (_flashRoutine != null) StopCoroutine(_flashRoutine);
+            _flashRoutine = StartCoroutine(FlashRoutine());
+        }
+
+        private IEnumerator FlashRoutine()
+        {
+            if (_spriteRenderer == null) yield break;
+            var original = _spriteRenderer.color;
+            var flash = new Color(1f, 0.85f, 0.35f); // warm amber tint, visible over the white sprite
+            for (var i = 0; i < 3; i++)
+            {
+                _spriteRenderer.color = flash;
+                yield return new WaitForSeconds(0.1f);
+                _spriteRenderer.color = original;
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
 }
