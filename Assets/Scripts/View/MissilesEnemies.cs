@@ -12,8 +12,10 @@ namespace View
         [SerializeField] private GameObject targetLeft, targetRight;
         [SerializeField] private GameObject missile;
         [SerializeField] private float spawnIntervalSeconds = 1.5f;
+        // Velocidad enemiga por sector (DEFAULTS solos — ajustables en Inspector):
+        // S1 lento para enseñar, S5 tormenta (2.4x S1). Impulsos 50/65/80/100/120.
         [Header("Velocidad enemiga por sector")]
-        [SerializeField] private float[] sectorSpeedMultipliers = { 0.8f, 0.9f, 1f, 1.1f, 1.2f };
+        [SerializeField] private float[] sectorSpeedMultipliers = { 0.5f, 0.65f, 0.8f, 1f, 1.2f };
 
         private bool _canCreateMissile;
         private bool _sectorActive;
