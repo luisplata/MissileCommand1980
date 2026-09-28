@@ -23,7 +23,7 @@ namespace View
             _canUseTank = true;
         }
 
-        public delegate void OnPlayerDestroyEnemy();
+        public delegate void OnPlayerDestroyEnemy(int points);
         public OnPlayerDestroyEnemy OnEnemyDestroy;
         private bool _canUseTank;
 
@@ -63,9 +63,9 @@ namespace View
                 {
                     //Aqui convertir en un builder
                     bulletComponent.Configure(_tank.GetGoal(), _tank.GetDirectionNormalize(), pointToExit);
-                    bulletComponent.OnEnemyDestroy += () =>
+                    bulletComponent.OnEnemyDestroy += points =>
                     {
-                        OnEnemyDestroy?.Invoke();
+                        OnEnemyDestroy?.Invoke(points);
                     };
                 }
             }

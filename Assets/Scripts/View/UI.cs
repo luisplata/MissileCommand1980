@@ -26,9 +26,9 @@ namespace View
             points.text = $"{_runSession.Score}";
         }
 
-        private void OnEnemyDestroy()
+        private void OnEnemyDestroy(int gainedPoints)
         {
-            _runSession.AddScore();
+            _runSession.AddScore(gainedPoints);
             _runSession.AddKill();
             points.text = $"{_runSession.Score}";
         }

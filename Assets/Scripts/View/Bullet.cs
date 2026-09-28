@@ -21,7 +21,7 @@ namespace View
         [SerializeField] private Explosion explosion;
         [SerializeField] private LineRenderer linesRender;
         [SerializeField] private Vector2 goal;
-        [SerializeField] private bool isPlayer;
+        [SerializeField] public bool isPlayer;
         [SerializeField] private float damage;
         [SerializeField] private EnemyType enemyType;
         [SerializeField] private int points = 25;
@@ -43,6 +43,7 @@ namespace View
 
         private bool _split;
         private bool _hasDodged;
+        private bool _killReported;
         private float _totalTravelSqr;
 
         // M1b-1: sella tipo + puntos (Normal 25, Mirv 40, Warhead 40, Inteligente 125).
@@ -61,10 +62,32 @@ namespace View
         
         public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
 
+        // M1b-1 (SC-2): dedupe de kill sobre el MISMO objeto enemigo — tanto el
+        // contacto directo como la nube leen este flag: cada enemigo puntúa UNA vez.
+        public bool TryReportKill()
+        {
+            if (_killReported) return false;
+            _killReported = true;
+            return true;
+        }
+
         private void Awake()
         {
             listOfChain = new Stack<GameObject>();
             linesRender.positionCount = listOfChain.Count;
+            // M1b-1 (SC-2): la nube de explosión propia reporta kills por contacto
+            // con enemigos (Explosion.OnTriggerEnter2D); el bullet la reenvía al
+            // tanque solo si es del player. Suscripción única por instancia.
+            if (explosion != null)
+            {
+                explosion.OnEnemyDestroy += points =>
+                {
+                    if (isPlayer)
+                    {
+                        OnEnemyDestroy?.Invoke(points);
+                    }
+                };
+            }
         }
 
         public void Configure(Vector2 destiny, Vector2 diff, GameObject origin)
@@ -181,25 +204,26 @@ namespace View
                 {
                     return;
                 }
-                if (isPlayer)
+                // M1b-1 (SC-2): contacto directo del bullet del player con un enemigo.
+                if (isPlayer && other.TryGetComponent<Bullet>(out var enemy) && enemy.TryReportKill())
                 {
-                    OnEnemyDestroy?.Invoke();    
+                    OnEnemyDestroy?.Invoke(enemy.Points);
                 }
             }
             else
             {
                 // La nube de explosión (Untagged) de un bullet amigo no debe detonar este bullet.
-                if (other.GetComponentInParent<Bullet>() is Bullet cloudOwner && cloudOwner.isPlayer == isPlayer)
+                var cloudOwner = other.GetComponentInParent<Bullet>();
+                if (cloudOwner != null && cloudOwner.isPlayer == isPlayer)
                 {
                     return;
                 }
-                explosion.OnEnemyDestroy += () =>
+                // M1b-1 (SC-2): nube ENEMIGA sobre este bullet → la kill del dueño
+                // de la nube se reporta (dedupe por TryReportKill).
+                if (cloudOwner != null && !cloudOwner.isPlayer && cloudOwner.TryReportKill())
                 {
-                    if (isPlayer)
-                    {
-                        OnEnemyDestroy?.Invoke();    
-                    }
-                };
+                    OnEnemyDestroy?.Invoke(cloudOwner.Points);
+                }
             }
             Explosion();
         }

@@ -96,9 +96,15 @@ namespace View
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Respawn"))
+            // M1b-1 (SC-2): la nube lee los puntos del ENEMIGO colisionado y los
+            // reporta una sola vez. El guard !isPlayer además corrige el bug M0
+            // latente (la nube del player sobre un bullet amigo puntuaba).
+            if (other.CompareTag("Respawn") &&
+                other.TryGetComponent<Bullet>(out var bullet) &&
+                !bullet.isPlayer &&
+                bullet.TryReportKill())
             {
-                OnEnemyDestroy?.Invoke();
+                OnEnemyDestroy?.Invoke(bullet.Points);
             }
         }
     }

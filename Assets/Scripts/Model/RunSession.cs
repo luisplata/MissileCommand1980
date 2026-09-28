@@ -68,9 +68,9 @@ namespace Model
             SectorStarted?.Invoke();
         }
 
-        public void AddScore()
+        public void AddScore(int points)
         {
-            Score++;
+            Score += points;
         }
 
         public void AddKill()
