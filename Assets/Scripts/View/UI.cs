@@ -31,7 +31,13 @@ namespace View
 
         private void UpdateAmmo()
         {
-            ammoText.text = $"Munición: {baseManager.TotalAmmo}";
+            // Per-base ammo HUD: "A:10 D:10 O:10" (single line, space-separated).
+            var parts = new string[baseManager.BaseCount];
+            for (var i = 0; i < baseManager.BaseCount; i++)
+            {
+                parts[i] = $"{BaseManager.DisplayName(i)}:{baseManager.AmmoFor(i)}";
+            }
+            ammoText.text = string.Join(" ", parts);
         }
 
         private void OnEnemyDestroy(int gainedPoints)
