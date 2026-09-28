@@ -1,51 +1,14 @@
-using System;
 using System.Collections.Generic;
 using Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using View.Cards;
 
 namespace View
 {
     public class DraftController : MonoBehaviour
     {
-        public enum CardType
-        {
-            RadioMas,
-            Recarga,
-            Doble,
-            Lenta,
-            Propulsores
-        }
-
-        private static readonly Dictionary<CardType, string> CardCatalog = new Dictionary<CardType, string>
-        {
-            { CardType.RadioMas, "Radio+" },
-            { CardType.Recarga, "Recarga" },
-            { CardType.Doble, "Doble" },
-            { CardType.Lenta, "Lenta" },
-            { CardType.Propulsores, "Propulsores" }
-        };
-
-        private string GetCardDescription(CardType card)
-        {
-            switch (card)
-            {
-                case CardType.RadioMas:
-                    return $"Nube de explosión +{(radioMaxScaleMultiplier - 1) * 100:0}%";
-                case CardType.Recarga:
-                    return $"Cooldown del cañón -{(1 - recargaCooldownMultiplier) * 100:0}%";
-                case CardType.Doble:
-                    return $"Doble: {dobleBulletsPerShot} misiles por disparo";
-                case CardType.Lenta:
-                    return $"Misiles enemigos -{lentaSpeedFactor * 100:0}% por {lentaDurationSeconds:0}s";
-                case CardType.Propulsores:
-                    return $"Interceptor +{(propulsoresImpulseMultiplier - 1) * 100:0}% vel. y apuntado más rápido";
-                default:
-                    return string.Empty;
-            }
-        }
-
         [SerializeField] private BaseManager baseManager;
         [SerializeField] private MissilesEnemies missilesEnemies;
         [SerializeField] private InputController inputController;
@@ -54,24 +17,10 @@ namespace View
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private Button[] cardButtons = new Button[3];
         [SerializeField] private TextMeshProUGUI[] cardLabels = new TextMeshProUGUI[3];
+        [SerializeField] private List<CardSO> pool;
 
-        [Header("Mejoras de cartas (tunables)")]
-        [Tooltip("Radio+: multiplicador de escala de explosión")]
-        [SerializeField] private float radioMaxScaleMultiplier = 1.25f;
-        [Tooltip("Recarga: multiplicador de cooldown del cañón")]
-        [SerializeField] private float recargaCooldownMultiplier = 0.8f;
-        [Tooltip("Doble: misiles por disparo")]
-        [SerializeField] private int dobleBulletsPerShot = 2;
-        [Tooltip("Lenta: factor de velocidad enemiga (0.5 = -50%)")]
-        [SerializeField] private float lentaSpeedFactor = 0.5f;
-        [Tooltip("Lenta: duración del enlentecimiento (s)")]
-        [SerializeField] private float lentaDurationSeconds = 3f;
-        [Tooltip("Propulsores: multiplicador de impulso del interceptor")]
-        [SerializeField] private float propulsoresImpulseMultiplier = 1.2f;
-        [Tooltip("Propulsores: multiplicador de velocidad de apuntado")]
-        [SerializeField] private float propulsoresAimMultiplier = 1.2f;
-
-        private readonly List<CardType> _currentCards = new List<CardType>(3);
+        private readonly List<CardSO> _currentCards = new List<CardSO>(3);
+        private readonly CardContext _ctx = new CardContext();
         private bool _draftOpen;
 
         // El draft se abre entre sectores: RunSession emite SectorStarted al
@@ -79,6 +28,9 @@ namespace View
         private void Start()
         {
             RunSession.Current.SectorStarted += ShowDraft;
+            _ctx.baseManager = baseManager;
+            _ctx.missilesEnemies = missilesEnemies;
+            _ctx.bulletPrefab = bulletPrefab;
         }
 
         private void ShowDraft()
@@ -92,7 +44,7 @@ namespace View
             }
             for (var i = 0; i < cardButtons.Length; i++)
             {
-                cardLabels[i].text = $"{CardCatalog[_currentCards[i]]}\n<size=55%>{GetCardDescription(_currentCards[i])}</size>";
+                cardLabels[i].text = $"{_currentCards[i].CardName}\n<size=55%>{_currentCards[i].GetDescription()}</size>";
             }
             panelDraft.SetActive(true);
             Time.timeScale = 0f;
@@ -102,7 +54,7 @@ namespace View
         public void ChooseCard(int index)
         {
             if (!_draftOpen) return;
-            ApplyEffect(_currentCards[index]);
+            _currentCards[index].ApplyEffect(_ctx);
             _draftOpen = false;
             panelDraft.SetActive(false);
             Time.timeScale = 1f;
@@ -113,36 +65,12 @@ namespace View
         private void DealCards()
         {
             _currentCards.Clear();
-            var pool = new List<CardType>(CardCatalog.Count);
-            pool.AddRange(CardCatalog.Keys);
-            while (_currentCards.Count < 3 && pool.Count > 0)
+            var temp = new List<CardSO>(pool);
+            while (_currentCards.Count < 3 && temp.Count > 0)
             {
-                var pick = pool[UnityEngine.Random.Range(0, pool.Count)];
-                pool.Remove(pick);
+                var pick = temp[UnityEngine.Random.Range(0, temp.Count)];
+                temp.Remove(pick);
                 _currentCards.Add(pick);
-            }
-        }
-
-        private void ApplyEffect(CardType card)
-        {
-            switch (card)
-            {
-                case CardType.RadioMas:
-                    bulletPrefab.GetComponentInChildren<Explosion>().MultiplyMaxScale(radioMaxScaleMultiplier);
-                    break;
-                case CardType.Recarga:
-                    baseManager.ApplyToAll(b => b.MultiplyCooldown(recargaCooldownMultiplier));
-                    break;
-                case CardType.Doble:
-                    baseManager.ApplyToAll(b => b.SetBulletsPerShot(dobleBulletsPerShot));
-                    break;
-                case CardType.Lenta:
-                    missilesEnemies.SlowEnemies(lentaSpeedFactor, lentaDurationSeconds);
-                    break;
-                case CardType.Propulsores:
-                    bulletPrefab.GetComponent<Bullet>().MultiplyImpulseForce(propulsoresImpulseMultiplier);
-                    baseManager.ApplyToAll(b => b.MultiplyAimSpeed(propulsoresAimMultiplier));
-                    break;
             }
         }
     }
