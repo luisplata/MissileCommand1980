@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Model;
@@ -13,30 +12,28 @@ namespace View
         [SerializeField] private GameObject targetLeft, targetRight;
         [SerializeField] private GameObject missile;
 
-        [SerializeField] private float minTime, maxTime;
-        [SerializeField] private float detaTimeLocal, time;
-        [SerializeField] private List<string> cantidadDeMisiles;
-        
         private bool _canCreateMissile;
         private readonly List<Bullet> _activeEnemies = new();
 
         private void Start()
         {
-            time = Random.Range(minTime, maxTime);
             _canCreateMissile = true;
-            Debug.Log($"Sector {RunSession.Current.Sector}");
+            StartSector(RunSession.Current.Sector);
         }
 
-        public void CreateMissile()
+        public void StartSector(int sector)
         {
-            foreach (var misile in cantidadDeMisiles)
+            if (!_canCreateMissile) return;
+            var config = SectorConfigs.All[sector - 1];
+            Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles");
+            for (var i = 0; i < config.TotalCount; i++)
             {
                 var missileLocal = Instantiate(missile) as GameObject;
                 var enemyMissile = missileLocal.GetComponent<Bullet>();
                 var position = new Vector2(Random.Range(limitLeft.transform.position.x, limitRight.transform.position.x), limitLeft.transform.position.y);
                 var target = PickCityTarget();
-                Debug.Log($"position {position} target {target}");
                 missileLocal.transform.position = position;
+                enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
                 enemyMissile.Configure(target, (target - position).normalized, missileLocal);
                 _activeEnemies.Add(enemyMissile);
             }
@@ -55,22 +52,16 @@ namespace View
 
         private void Update()
         {
-            if (!_canCreateMissile) return;
-            detaTimeLocal += Time.deltaTime;
-            if (!(detaTimeLocal > time)) return;
-            detaTimeLocal = 0;
-            time = Random.Range(minTime, maxTime);
-            CreateMissile();
+            _activeEnemies.RemoveAll(m => m == null);
+            if (_activeEnemies.Count == 0)
+            {
+                RunSession.Current.CompleteSector();
+            }
         }
 
         public void StopCreatingMissile()
         {
             _canCreateMissile = false;
-        }
-
-        public void AddOneMoreMissile()
-        {
-            cantidadDeMisiles.Add("OtroMisile");
         }
 
         public void SlowEnemies(float factor, float duration)
