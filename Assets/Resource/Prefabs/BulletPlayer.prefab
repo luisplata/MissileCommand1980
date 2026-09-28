@@ -157,7 +157,7 @@ MonoBehaviour:
   fadeDelay: 0.5
   fadeDuration: 1.5
   explosionIncreasing: 2.5
-  maxScale: 5
+  maxScale: 12.207031
   startScale: 0
   explosionIncreasingLight: 4
   lightStartRadius: 0
@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceMin: 0.01
-  impulseForce: 400
+  impulseForce: 100
   explosion: {fileID: 5059413697439958823}
   linesRender: {fileID: 8858419276721309491}
   goal: {x: 0, y: 0}

@@ -55,6 +55,12 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+# Agent skill registry (delegator infrastructure)
+.atl/
+
+# Unity build cache (Android/CMake)
+.utmp/
+
 # Crashlytics generated file
 crashlytics-build.properties
 
