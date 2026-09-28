@@ -20,6 +20,7 @@ namespace View
         private Coroutine _spawnCoroutine;
         private Coroutine _slowCoroutine;
         private readonly List<Bullet> _activeEnemies = new();
+        private readonly List<EnemyType> _mixQueue = new();
 
         private void Start()
         {
@@ -38,8 +39,41 @@ namespace View
             _spawned = 0;
             var config = SectorConfigs.All[sector - 1];
             _totalCount = config.TotalCount;
-            Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles");
+            BuildMixQueue(config);
+            Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles ({config.Normals}N/{config.Mirvs}M/{config.Inteligentes}I)");
             _spawnCoroutine = StartCoroutine(SpawnSectorCoroutine(config));
+        }
+
+        // M1b-1 (SM-2): la cola de mezcla se arma con las cantidades exactas por
+        // tipo del sector y se baraja (Fisher-Yates) una vez por sector. Cada
+        // entrada se consume exactamente una vez → totales exactos garantizados.
+        private void BuildMixQueue(SectorConfig config)
+        {
+            _mixQueue.Clear();
+            for (var i = 0; i < config.Normals; i++)
+            {
+                _mixQueue.Add(EnemyType.Normal);
+            }
+            for (var i = 0; i < config.Mirvs; i++)
+            {
+                _mixQueue.Add(EnemyType.Mirv);
+            }
+            for (var i = 0; i < config.Inteligentes; i++)
+            {
+                _mixQueue.Add(EnemyType.Inteligente);
+            }
+            for (var i = _mixQueue.Count - 1; i > 0; i--)
+            {
+                var j = Random.Range(0, i + 1);
+                (_mixQueue[i], _mixQueue[j]) = (_mixQueue[j], _mixQueue[i]);
+            }
+        }
+
+        private EnemyType PopNextType()
+        {
+            var type = _mixQueue[_mixQueue.Count - 1];
+            _mixQueue.RemoveAt(_mixQueue.Count - 1);
+            return type;
         }
 
         // M1a-IT2 (dificultad): los misiles del sector se spawnean ESCALONADOS,
@@ -69,6 +103,7 @@ namespace View
             var target = PickCityTarget();
             missileLocal.transform.position = position;
             enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
+            enemyMissile.SetEnemyType(PopNextType());
             enemyMissile.Configure(target, (target - position).normalized, missileLocal);
             _activeEnemies.Add(enemyMissile);
         }

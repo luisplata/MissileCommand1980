@@ -4,17 +4,44 @@ using UnityEngine;
 
 namespace View
 {
+    // M1b-1: tipos de enemigo. Warhead es runtime-only (hijo de un MIRV),
+    // NUNCA entra en la cola de mezcla del sector ("no 4th type").
+    public enum EnemyType
+    {
+        Normal,
+        Mirv,
+        Inteligente,
+        Warhead
+    }
+
     public class Bullet : MonoBehaviour
     {
         [SerializeField] private float distanceMin;
         [SerializeField] private float impulseForce;
         [SerializeField] private Explosion explosion;
         [SerializeField] private LineRenderer linesRender;
-        [SerializeField]private Vector2 goal;
+        [SerializeField] private Vector2 goal;
         [SerializeField] private bool isPlayer;
         [SerializeField] private float damage;
+        [SerializeField] private EnemyType enemyType;
+        [SerializeField] private int points = 25;
         private Stack<GameObject> listOfChain;
         private GameObject originI;
+
+        public int Points => points;
+
+        // M1b-1: sella tipo + puntos (Normal 25, Mirv 40, Warhead 40, Inteligente 125).
+        public void SetEnemyType(EnemyType type)
+        {
+            enemyType = type;
+            points = type switch
+            {
+                EnemyType.Mirv => 40,
+                EnemyType.Warhead => 40,
+                EnemyType.Inteligente => 125,
+                _ => 25
+            };
+        }
         
         
         public TankView.OnPlayerDestroyEnemy OnEnemyDestroy;
