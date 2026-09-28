@@ -12,13 +12,14 @@ namespace View
         [SerializeField] private List<Transform> basePositions = new List<Transform>();
         [SerializeField] private int ammoPerBase = 10;
         [SerializeField] private float shotCooldownSeconds = 0.5f; // mirrors TankView.cooldown prefab value
-        [SerializeField] private float ammoLabelFontSize = 2.7f;    // world units @ scale 1 (LiberationSans SDF renders ~0.111u per unit → 2.7 ≈ 0.30u tall, readable; clears Barrer wall x=0.82)
+        [SerializeField] private float ammoLabelFontSize = 30f;      // TMP-UI font size in canvas units (canvas scale 0.01 → ~0.3u tall world text)
+        [SerializeField] private float ammoLabelCanvasScale = 0.01f; // world-space canvas scale: 1 canvas unit = 0.01 world unit
         [SerializeField] private Vector2 ammoLabelOffset = new Vector2(0f, -0.5f);
 
         private static readonly string[] DisplayNames = { "A", "D", "O" };
 
         private readonly List<TankView> _bases = new List<TankView>();
-        private readonly List<TextMeshPro> _ammoLabels = new List<TextMeshPro>();
+        private readonly List<TextMeshProUGUI> _ammoLabels = new List<TextMeshProUGUI>();
         private int[] _ammo;
         private float _lastShotTime;
 
@@ -55,8 +56,9 @@ namespace View
                 var v = go.GetComponent<TankView>();
                 v.OnEnemyDestroy += p => OnEnemyDestroy?.Invoke(p);
                 _bases.Add(v);
-                // Per-base ammo label (world-space TMP 3D, no canvas). Closure over
-                // the per-iteration index → each cannon's label tracks its own ammo.
+                // Per-base ammo label on a world-space canvas (the earlier TMP 3D world
+                // text rendered invisible in play). Closure over the per-iteration index
+                // → each cannon's label tracks its own ammo.
                 var index = _bases.Count - 1;
                 var label = CreateAmmoLabel(go.transform);
                 _ammoLabels.Add(label);
@@ -76,20 +78,37 @@ namespace View
             }
         }
 
-        private TextMeshPro CreateAmmoLabel(Transform parent)
+        private TextMeshProUGUI CreateAmmoLabel(Transform parent)
         {
-            var go = new GameObject("AmmoLabel");
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = ammoLabelOffset;
-            var tmp = go.AddComponent<TextMeshPro>();   // auto-adds MeshRenderer; NO canvas
-            tmp.font = TMP_Settings.defaultFontAsset;   // project default font
+            // One tiny world-space canvas PER base, parented to the tank ROOT (which
+            // never rotates — only the `canion` child does, see TankView.Rotate). The
+            // label anchors at (0,0) → zero coordinate conversion, and the canvas
+            // follows the cannon automatically.
+            var canvasGo = new GameObject("AmmoLabelCanvas");
+            canvasGo.transform.SetParent(parent, false);
+            canvasGo.transform.localPosition = ammoLabelOffset;
+            canvasGo.transform.localScale = Vector3.one * ammoLabelCanvasScale;
+            var canvas = canvasGo.AddComponent<Canvas>(); // auto-adds RectTransform
+            canvas.renderMode = RenderMode.WorldSpace;    // no CanvasScaler: scale lives on the RectTransform
+            canvasGo.GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 1f);
+
+            var textGo = new GameObject("AmmoLabel");
+            textGo.transform.SetParent(canvasGo.transform, false);
+            var textRect = textGo.AddComponent<RectTransform>();
+            textRect.anchorMin = textRect.anchorMax = textRect.pivot = new Vector2(0.5f, 0.5f);
+            textRect.anchoredPosition = Vector2.zero; // canvas origin == base pos + offset
+            textRect.sizeDelta = new Vector2(150f, 50f);
+            var tmp = textGo.AddComponent<TextMeshProUGUI>();
+            tmp.font = TMP_Settings.defaultFontAsset; // same LiberationSans SDF the HUD renders with
             tmp.fontSize = ammoLabelFontSize;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = Color.white;
+            tmp.enableWordWrapping = false;
+            tmp.textWrappingMode = TextWrappingModes.NoWrap;
             return tmp;
         }
 
-        private void RefreshLabel(TextMeshPro label, int index) =>
+        private void RefreshLabel(TextMeshProUGUI label, int index) =>
             label.text = $"{DisplayName(index)}:{AmmoFor(index)}";
 
         private void Start()

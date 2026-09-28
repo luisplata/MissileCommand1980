@@ -6566,6 +6566,9 @@ MonoBehaviour:
   - {fileID: 2000000006}
   ammoPerBase: 10
   shotCooldownSeconds: 0.5
+  ammoLabelFontSize: 30
+  ammoLabelCanvasScale: 0.01
+  ammoLabelOffset: {x: 0, y: -0.5}
 --- !u!114 &1874715740
 MonoBehaviour:
   m_ObjectHideFlags: 0
