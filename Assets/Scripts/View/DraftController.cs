@@ -27,7 +27,6 @@ namespace View
             { CardType.Propulsores, "Propulsores" }
         };
 
-        [SerializeField] private float triggerIntervalSeconds = 30f;
         [SerializeField] private TankView tankView;
         [SerializeField] private MissilesEnemies missilesEnemies;
         [SerializeField] private InputController inputController;
@@ -39,25 +38,17 @@ namespace View
 
         private readonly List<CardType> _currentCards = new List<CardType>(3);
         private bool _draftOpen;
-        private float _elapsed;
 
-        // PLACEHOLDER trigger: time-based (baseline 30s) until M1 rewires the
-        // draft to open between sectors. Uses scaled deltaTime, so the paused
-        // draft window (timeScale=0) does NOT count toward the next draft.
-        private void Update()
+        // El draft se abre entre sectores: RunSession emite SectorStarted al
+        // completar la oleada activa (S1-S4). No hay trigger temporal.
+        private void Start()
         {
-            if (_draftOpen) return;
-            if (RunSession.Current == null || RunSession.Current.Life <= 0) return;
-            _elapsed += Time.deltaTime;
-            if (_elapsed >= triggerIntervalSeconds)
-            {
-                _elapsed = 0f;
-                ShowDraft();
-            }
+            RunSession.Current.SectorStarted += ShowDraft;
         }
 
         private void ShowDraft()
         {
+            if (_draftOpen) return;
             _draftOpen = true;
             DealCards();
             if (titleText != null)
@@ -81,6 +72,7 @@ namespace View
             panelDraft.SetActive(false);
             Time.timeScale = 1f;
             inputController.SetUsage(true);
+            missilesEnemies.StartSector(RunSession.Current.Sector);
         }
 
         private void DealCards()

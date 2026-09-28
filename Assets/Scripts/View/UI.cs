@@ -42,5 +42,14 @@ namespace View
         {
             panelGameOver.SetActive(true);
         }
+
+        public void ShowVictoryAndOptions()
+        {
+            if (gameOverTitle != null)
+            {
+                gameOverTitle.text = "¡Victoria!";
+            }
+            panelGameOver.SetActive(true);
+        }
     }
 }

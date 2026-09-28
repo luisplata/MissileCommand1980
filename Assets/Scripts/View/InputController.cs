@@ -48,6 +48,7 @@ namespace View
         private void Victory()
         {
             _usage = false;
+            ui.ShowVictoryAndOptions();
         }
 
         void Update()
