@@ -10,7 +10,6 @@ namespace View
         [SerializeField] private TankView tankView;
         [SerializeField] private TextMeshProUGUI points, lifeUi;
         [SerializeField] private GameObject panelGameOver;
-        [SerializeField] private DraftController draft;
         public OnAumentoDeMissiles AumentoDeMissiles;
         public delegate void OnAumentoDeMissiles();
         private RunSession _runSession;
@@ -36,7 +35,6 @@ namespace View
                 AumentoDeMissiles?.Invoke();
             }
             points.text = $"{_runSession.Score}";
-            draft?.OnEnemyKilled();
         }
 
         public void ApllyDamange(float damage)

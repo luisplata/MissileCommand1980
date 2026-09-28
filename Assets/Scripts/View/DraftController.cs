@@ -27,7 +27,7 @@ namespace View
             { CardType.Propulsores, "Propulsores" }
         };
 
-        [SerializeField] private int killThreshold = 10;
+        [SerializeField] private float triggerIntervalSeconds = 30f;
         [SerializeField] private TankView tankView;
         [SerializeField] private MissilesEnemies missilesEnemies;
         [SerializeField] private InputController inputController;
@@ -39,13 +39,21 @@ namespace View
 
         private readonly List<CardType> _currentCards = new List<CardType>(3);
         private bool _draftOpen;
+        private float _elapsed;
 
-        public void OnEnemyKilled()
+        // PLACEHOLDER trigger: time-based (baseline 30s) until M1 rewires the
+        // draft to open between sectors. Uses scaled deltaTime, so the paused
+        // draft window (timeScale=0) does NOT count toward the next draft.
+        private void Update()
         {
             if (_draftOpen) return;
             if (RunSession.Current == null || RunSession.Current.Life <= 0) return;
-            if (RunSession.Current.Kills % killThreshold != 0) return;
-            ShowDraft();
+            _elapsed += Time.deltaTime;
+            if (_elapsed >= triggerIntervalSeconds)
+            {
+                _elapsed = 0f;
+                ShowDraft();
+            }
         }
 
         private void ShowDraft()
