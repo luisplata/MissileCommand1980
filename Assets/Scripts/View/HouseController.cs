@@ -1,14 +1,19 @@
+using Model;
 using UnityEngine;
 
 namespace View
 {
     public class HouseController : ObjectDestroyer
     {
-        public FloorController.OnCollisionEnterFromBullet OnCollisionFromBullet;
+        [SerializeField] private int cityId;
+
+        public int CityId => cityId;
 
         public override void GetImpact(float damage)
         {
-            OnCollisionFromBullet?.Invoke(damage);
+            if (!RunSession.Current.CityAlive(cityId)) return;
+            RunSession.Current.KillCity(cityId);
+            gameObject.SetActive(false);
         }
     }
 }

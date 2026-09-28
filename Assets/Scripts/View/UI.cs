@@ -10,6 +10,7 @@ namespace View
         [SerializeField] private TankView tankView;
         [SerializeField] private TextMeshProUGUI points, lifeUi;
         [SerializeField] private GameObject panelGameOver;
+        [SerializeField] private TextMeshProUGUI gameOverTitle;
         private RunSession _runSession;
 
         private void Awake()
@@ -20,6 +21,7 @@ namespace View
         private void Start()
         {
             tankView.OnEnemyDestroy += OnEnemyDestroy;
+            _runSession.CityDied += UpdateUi;
             UpdateUi();
             points.text = $"{_runSession.Score}";
         }

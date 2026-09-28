@@ -24,6 +24,7 @@ namespace View
             _camera = Camera.main;
 
             RunSession.Current.RunOver += GameOver;
+            RunSession.Current.RunWon += Victory;
 
             again.onClick.AddListener(() =>
             {
@@ -41,6 +42,11 @@ namespace View
             missilesCreator.StopCreatingMissile();
             tankView.StopAllMovements();
             ui.ShowGameOverAndOptions();
+            _usage = false;
+        }
+
+        private void Victory()
+        {
             _usage = false;
         }
 

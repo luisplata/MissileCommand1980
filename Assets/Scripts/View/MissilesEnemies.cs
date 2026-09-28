@@ -44,8 +44,18 @@ namespace View
             var houses = FindObjectsByType<HouseController>(FindObjectsSortMode.None);
             if (houses.Length > 0)
             {
-                var house = houses[Random.Range(0, houses.Length)];
-                return house.transform.position;
+                var alive = new List<HouseController>(houses.Length);
+                foreach (var house in houses)
+                {
+                    if (RunSession.Current.CityAlive(house.CityId))
+                    {
+                        alive.Add(house);
+                    }
+                }
+                if (alive.Count > 0)
+                {
+                    return alive[Random.Range(0, alive.Count)].transform.position;
+                }
             }
             return new Vector2(Random.Range(targetLeft.transform.position.x, targetRight.transform.position.x), targetLeft.transform.position.y);
         }

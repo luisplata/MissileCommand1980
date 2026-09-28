@@ -4,13 +4,9 @@ namespace View
 {
     public class FloorController : ObjectDestroyer
     {
-        public delegate void OnCollisionEnterFromBullet(float damage);
-
-        public OnCollisionEnterFromBullet OnCollisionFromBullet;
-
         public override void GetImpact(float damage)
         {
-            OnCollisionFromBullet?.Invoke(damage);
+            // El piso no daña ciudades: un impacto en el suelo es inofensivo (M1a).
         }
     }
 }
