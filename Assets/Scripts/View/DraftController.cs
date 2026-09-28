@@ -27,14 +27,24 @@ namespace View
             { CardType.Propulsores, "Propulsores" }
         };
 
-        private static readonly Dictionary<CardType, string> CardDescriptions = new Dictionary<CardType, string>
+        private string GetCardDescription(CardType card)
         {
-            { CardType.RadioMas, "Nube de explosión +25%" },
-            { CardType.Recarga, "Cooldown del cañón -20%" },
-            { CardType.Doble, "2 misiles por disparo" },
-            { CardType.Lenta, "Misiles enemigos -50% por 3s" },
-            { CardType.Propulsores, "Interceptor +20% vel. y apuntado más rápido" }
-        };
+            switch (card)
+            {
+                case CardType.RadioMas:
+                    return $"Nube de explosión +{(radioMaxScaleMultiplier - 1) * 100:0}%";
+                case CardType.Recarga:
+                    return $"Cooldown del cañón -{(1 - recargaCooldownMultiplier) * 100:0}%";
+                case CardType.Doble:
+                    return $"Doble: {dobleBulletsPerShot} misiles por disparo";
+                case CardType.Lenta:
+                    return $"Misiles enemigos -{lentaSpeedFactor * 100:0}% por {lentaDurationSeconds:0}s";
+                case CardType.Propulsores:
+                    return $"Interceptor +{(propulsoresImpulseMultiplier - 1) * 100:0}% vel. y apuntado más rápido";
+                default:
+                    return string.Empty;
+            }
+        }
 
         [SerializeField] private BaseManager baseManager;
         [SerializeField] private MissilesEnemies missilesEnemies;
@@ -82,7 +92,7 @@ namespace View
             }
             for (var i = 0; i < cardButtons.Length; i++)
             {
-                cardLabels[i].text = $"{CardCatalog[_currentCards[i]]}\n<size=55%>{CardDescriptions[_currentCards[i]]}</size>";
+                cardLabels[i].text = $"{CardCatalog[_currentCards[i]]}\n<size=55%>{GetCardDescription(_currentCards[i])}</size>";
             }
             panelDraft.SetActive(true);
             Time.timeScale = 0f;
