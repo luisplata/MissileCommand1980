@@ -303,6 +303,10 @@ MonoBehaviour:
   goal: {x: 0, y: 0}
   isPlayer: 0
   damage: 100
+  enemyType: 0
+  points: 25
+  dodgeRadius: 1.5
+  mirvChildPrefab: {fileID: -2578716130860433733}
 --- !u!120 &8858419276721309491
 LineRenderer:
   m_ObjectHideFlags: 0

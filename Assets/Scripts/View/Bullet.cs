@@ -25,10 +25,25 @@ namespace View
         [SerializeField] private float damage;
         [SerializeField] private EnemyType enemyType;
         [SerializeField] private int points = 25;
+        [SerializeField] private float dodgeRadius = 1.5f;
+        [SerializeField] private Bullet mirvChildPrefab;
         private Stack<GameObject> listOfChain;
         private GameObject originI;
 
+        // M1b-1: eventos que el spawner (MissilesEnemies) suscribe para
+        // materializar el split del MIRV y la esquiva del inteligente.
+        public event Action<Bullet> SplitRequested;
+        public event Action<Bullet> DodgeRequested;
+
         public int Points => points;
+
+        // Acceso para el handler del spawner (HandleMirvSplit): el prefab hijo
+        // se serializa en Bullet (self-ref) con fallback al prefab base.
+        public Bullet MirvChildPrefab => mirvChildPrefab;
+
+        private bool _split;
+        private bool _hasDodged;
+        private float _totalTravelSqr;
 
         // M1b-1: sella tipo + puntos (Normal 25, Mirv 40, Warhead 40, Inteligente 125).
         public void SetEnemyType(EnemyType type)
@@ -55,6 +70,7 @@ namespace View
         public void Configure(Vector2 destiny, Vector2 diff, GameObject origin)
         {
             goal = destiny;
+            _totalTravelSqr = (destiny - (Vector2)transform.position).sqrMagnitude;
             GetComponent<Rigidbody2D>().AddForce(diff * impulseForce, ForceMode2D.Force);
             originI = new GameObject("Origin");
             originI.transform.position = origin.transform.position;
@@ -62,13 +78,47 @@ namespace View
             listOfChain.Push(gameObject);
         }
 
-        public void MultiplyImpulseForce(float factor)
+        // M1b-1 (IN-1): re-aim del inteligente tras esquivar — solo cambia la
+        // dirección (meta + velocidad normalizada por la magnitud actual).
+        // NO toca impulseForce/AddForce: el feel de impulso M0 queda intacto.
+        public void ReAim(Vector2 newTarget)
         {
-            impulseForce *= factor;
+            goal = newTarget;
+            var rigidbody = GetComponent<Rigidbody2D>();
+            var currentMagnitude = rigidbody.linearVelocity.magnitude;
+            rigidbody.linearVelocity = (newTarget - (Vector2)transform.position).normalized * currentMagnitude;
         }
 
         private void Update()
         {
+            // M1b-1 (MV-1): el MIRV se parte al >=50% del recorrido
+            // (queda <=25% de la distancia total al cuadrado) y solo una vez.
+            if (enemyType == EnemyType.Mirv && !_split)
+            {
+                var remainingSqr = (goal - (Vector2)transform.position).sqrMagnitude;
+                if (_totalTravelSqr > 0f && remainingSqr <= _totalTravelSqr * 0.25f)
+                {
+                    _split = true;
+                    SplitRequested?.Invoke(this);
+                    Explosion();
+                }
+            }
+            // M1b-1 (IN-1): el inteligente esquiva UNA vez cuando un bullet del
+            // player entra en su radio (dodgeRadius serializado).
+            else if (enemyType == EnemyType.Inteligente && !_hasDodged)
+            {
+                var hits = Physics2D.OverlapCircleAll(transform.position, dodgeRadius);
+                foreach (var hit in hits)
+                {
+                    if (hit.TryGetComponent<Bullet>(out var bullet) && bullet.isPlayer)
+                    {
+                        _hasDodged = true;
+                        DodgeRequested?.Invoke(this);
+                        break;
+                    }
+                }
+            }
+
             if ((goal - (Vector2)transform.position).sqrMagnitude < distanceMin)
             {
                 Explosion();
@@ -76,6 +126,12 @@ namespace View
 
             PrintLine();
         }
+
+        public void MultiplyImpulseForce(float factor)
+        {
+            impulseForce *= factor;
+        }
+
         private void PrintLine()
         {
             if (listOfChain.Count <= 0)
