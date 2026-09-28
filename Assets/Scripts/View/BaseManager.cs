@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Model;
+using TMPro;
 using UnityEngine;
 
 namespace View
@@ -11,10 +12,13 @@ namespace View
         [SerializeField] private List<Transform> basePositions = new List<Transform>();
         [SerializeField] private int ammoPerBase = 10;
         [SerializeField] private float shotCooldownSeconds = 0.5f; // mirrors TankView.cooldown prefab value
+        [SerializeField] private float ammoLabelFontSize = 2.7f;    // world units @ scale 1 (LiberationSans SDF renders ~0.111u per unit → 2.7 ≈ 0.30u tall, readable; clears Barrer wall x=0.82)
+        [SerializeField] private Vector2 ammoLabelOffset = new Vector2(0f, -0.5f);
 
         private static readonly string[] DisplayNames = { "A", "D", "O" };
 
         private readonly List<TankView> _bases = new List<TankView>();
+        private readonly List<TextMeshPro> _ammoLabels = new List<TextMeshPro>();
         private int[] _ammo;
         private float _lastShotTime;
 
@@ -51,6 +55,12 @@ namespace View
                 var v = go.GetComponent<TankView>();
                 v.OnEnemyDestroy += p => OnEnemyDestroy?.Invoke(p);
                 _bases.Add(v);
+                // Per-base ammo label (world-space TMP 3D, no canvas). Closure over
+                // the per-iteration index → each cannon's label tracks its own ammo.
+                var index = _bases.Count - 1;
+                var label = CreateAmmoLabel(go.transform);
+                _ammoLabels.Add(label);
+                AmmoChanged += () => RefreshLabel(label, index);
             }
             _ammo = new int[_bases.Count];
             _lastShotTime = float.NegativeInfinity;
@@ -58,7 +68,29 @@ namespace View
             {
                 _ammo[i] = ammoPerBase;
             }
+            // Init labels (SectorStarted only fires on sector COMPLETION, so game-start
+            // labels would stay blank until the first AmmoChanged otherwise).
+            for (var i = 0; i < _ammoLabels.Count; i++)
+            {
+                RefreshLabel(_ammoLabels[i], i);
+            }
         }
+
+        private TextMeshPro CreateAmmoLabel(Transform parent)
+        {
+            var go = new GameObject("AmmoLabel");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = ammoLabelOffset;
+            var tmp = go.AddComponent<TextMeshPro>();   // auto-adds MeshRenderer; NO canvas
+            tmp.font = TMP_Settings.defaultFontAsset;   // project default font
+            tmp.fontSize = ammoLabelFontSize;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+            return tmp;
+        }
+
+        private void RefreshLabel(TextMeshPro label, int index) =>
+            label.text = $"{DisplayName(index)}:{AmmoFor(index)}";
 
         private void Start()
         {
