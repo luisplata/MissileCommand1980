@@ -24,7 +24,7 @@ namespace View
         {
             time = Random.Range(minTime, maxTime);
             _canCreateMissile = true;
-            Debug.Log($"Wave {RunSession.Current.Wave}");
+            Debug.Log($"Sector {RunSession.Current.Sector}");
         }
 
         public void CreateMissile()

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Model;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +11,6 @@ namespace View
         [SerializeField] private TankView tankView;
         [SerializeField] private MenuController menu;
         [SerializeField] private FloorController floor;
-        [SerializeField] private List<HouseController> houses;
         [SerializeField] private UI ui;
         [SerializeField] private MissilesEnemies missilesCreator;
         [SerializeField] private Button again, exit;
@@ -24,15 +22,9 @@ namespace View
         private void Start()
         {
             _camera = Camera.main;
-            floor.OnCollisionFromBullet += OnCollisionFromBullet;
-            foreach (var house in houses)
-            {
-                house.OnCollisionFromBullet += OnCollisionFromBullet;
-            }
-            
+
             RunSession.Current.RunOver += GameOver;
-            ui.AumentoDeMissiles += AumentoDeMissiles;
-            
+
             again.onClick.AddListener(() =>
             {
                 GetComponent<MenuController>().LoadScene(MenuController.MainMenuScene);
@@ -44,23 +36,12 @@ namespace View
             _usage = true;
         }
 
-        private void AumentoDeMissiles()
-        {
-            missilesCreator.AddOneMoreMissile();
-        }
-
         private void GameOver()
         {
             missilesCreator.StopCreatingMissile();
             tankView.StopAllMovements();
             ui.ShowGameOverAndOptions();
             _usage = false;
-        }
-
-        private void OnCollisionFromBullet(float damage)
-        {
-            //Logica para la vida y puntuacion
-            ui.ApllyDamange(damage);
         }
 
         void Update()

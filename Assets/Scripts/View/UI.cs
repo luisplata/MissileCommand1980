@@ -10,13 +10,11 @@ namespace View
         [SerializeField] private TankView tankView;
         [SerializeField] private TextMeshProUGUI points, lifeUi;
         [SerializeField] private GameObject panelGameOver;
-        public OnAumentoDeMissiles AumentoDeMissiles;
-        public delegate void OnAumentoDeMissiles();
         private RunSession _runSession;
 
         private void Awake()
         {
-            RunSession.Current = _runSession = new RunSession(1000f, 10);
+            RunSession.Current = _runSession = new RunSession();
         }
 
         private void Start()
@@ -30,17 +28,7 @@ namespace View
         {
             _runSession.AddScore();
             _runSession.AddKill();
-            if (_runSession.ShouldAddMissile())
-            {
-                AumentoDeMissiles?.Invoke();
-            }
             points.text = $"{_runSession.Score}";
-        }
-
-        public void ApllyDamange(float damage)
-        {
-            _runSession.ApplyDamage(damage);
-            UpdateUi();
         }
 
         private void UpdateUi()
