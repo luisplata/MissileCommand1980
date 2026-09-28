@@ -45,6 +45,22 @@ namespace View
         [SerializeField] private Button[] cardButtons = new Button[3];
         [SerializeField] private TextMeshProUGUI[] cardLabels = new TextMeshProUGUI[3];
 
+        [Header("Mejoras de cartas (tunables)")]
+        [Tooltip("Radio+: multiplicador de escala de explosión")]
+        [SerializeField] private float radioMaxScaleMultiplier = 1.25f;
+        [Tooltip("Recarga: multiplicador de cooldown del cañón")]
+        [SerializeField] private float recargaCooldownMultiplier = 0.8f;
+        [Tooltip("Doble: misiles por disparo")]
+        [SerializeField] private int dobleBulletsPerShot = 2;
+        [Tooltip("Lenta: factor de velocidad enemiga (0.5 = -50%)")]
+        [SerializeField] private float lentaSpeedFactor = 0.5f;
+        [Tooltip("Lenta: duración del enlentecimiento (s)")]
+        [SerializeField] private float lentaDurationSeconds = 3f;
+        [Tooltip("Propulsores: multiplicador de impulso del interceptor")]
+        [SerializeField] private float propulsoresImpulseMultiplier = 1.2f;
+        [Tooltip("Propulsores: multiplicador de velocidad de apuntado")]
+        [SerializeField] private float propulsoresAimMultiplier = 1.2f;
+
         private readonly List<CardType> _currentCards = new List<CardType>(3);
         private bool _draftOpen;
 
@@ -102,20 +118,20 @@ namespace View
             switch (card)
             {
                 case CardType.RadioMas:
-                    bulletPrefab.GetComponentInChildren<Explosion>().MultiplyMaxScale(1.25f);
+                    bulletPrefab.GetComponentInChildren<Explosion>().MultiplyMaxScale(radioMaxScaleMultiplier);
                     break;
                 case CardType.Recarga:
-                    baseManager.ApplyToAll(b => b.MultiplyCooldown(0.8f));
+                    baseManager.ApplyToAll(b => b.MultiplyCooldown(recargaCooldownMultiplier));
                     break;
                 case CardType.Doble:
-                    baseManager.ApplyToAll(b => b.SetBulletsPerShot(2));
+                    baseManager.ApplyToAll(b => b.SetBulletsPerShot(dobleBulletsPerShot));
                     break;
                 case CardType.Lenta:
-                    missilesEnemies.SlowEnemies(0.5f, 3f);
+                    missilesEnemies.SlowEnemies(lentaSpeedFactor, lentaDurationSeconds);
                     break;
                 case CardType.Propulsores:
-                    bulletPrefab.GetComponent<Bullet>().MultiplyImpulseForce(1.2f);
-                    baseManager.ApplyToAll(b => b.MultiplyAimSpeed(1.2f));
+                    bulletPrefab.GetComponent<Bullet>().MultiplyImpulseForce(propulsoresImpulseMultiplier);
+                    baseManager.ApplyToAll(b => b.MultiplyAimSpeed(propulsoresAimMultiplier));
                     break;
             }
         }
