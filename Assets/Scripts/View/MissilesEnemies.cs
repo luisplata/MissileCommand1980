@@ -12,6 +12,8 @@ namespace View
         [SerializeField] private GameObject targetLeft, targetRight;
         [SerializeField] private GameObject missile;
         [SerializeField] private float spawnIntervalSeconds = 1.5f;
+        [Header("Velocidad enemiga por sector")]
+        [SerializeField] private float[] sectorSpeedMultipliers = { 0.8f, 0.9f, 1f, 1.1f, 1.2f };
 
         private bool _canCreateMissile;
         private bool _sectorActive;
@@ -102,12 +104,20 @@ namespace View
             var position = new Vector2(Random.Range(limitLeft.transform.position.x, limitRight.transform.position.x), limitLeft.transform.position.y);
             var target = PickCityTarget();
             missileLocal.transform.position = position;
-            enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
+            enemyMissile.MultiplyImpulseForce(SectorSpeedMultiplier(config));
             enemyMissile.SetEnemyType(PopNextType());
             enemyMissile.Configure(target, (target - position).normalized, missileLocal);
             enemyMissile.SplitRequested += HandleMirvSplit;
             enemyMissile.DodgeRequested += HandleInteligenteDodge;
             _activeEnemies.Add(enemyMissile);
+        }
+
+        // M1b-1 (dificultad): multiplicador de velocidad por sector. Index 0-based
+        // sobre sectorSpeedMultipliers (S1 → [0] ... S5 → [4]); fuera de rango → 1f.
+        private float SectorSpeedMultiplier(SectorConfig config)
+        {
+            var index = config.Sector - 1;
+            return index >= 0 && index < sectorSpeedMultipliers.Length ? sectorSpeedMultipliers[index] : 1f;
         }
 
         // M1b-1 (MV-1/MV-2): el MIRV padre sale de _activeEnemies y genera 3
