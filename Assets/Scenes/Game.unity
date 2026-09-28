@@ -226,7 +226,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 882b0e878fd8edd45b09ea4eb676a145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::View.DraftController
-  killThreshold: 10
   tankView: {fileID: 1932500471}
   missilesEnemies: {fileID: 701043746}
   inputController: {fileID: 1874715738}
@@ -1359,6 +1358,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House1 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_RootOrder
       value: 19
@@ -2286,12 +2289,6 @@ MonoBehaviour:
   targetLeft: {fileID: 1736140502}
   targetRight: {fileID: 1044441734}
   missile: {fileID: 2054944642558497802, guid: f70297af44f286348aa9ef03dd220e46, type: 3}
-  minTime: 1
-  maxTime: 2
-  detaTimeLocal: 0
-  time: 0
-  cantidadDeMisiles:
-  - 
 --- !u!1 &715764988
 GameObject:
   m_ObjectHideFlags: 0
@@ -4541,6 +4538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House1 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_RootOrder
       value: 17
@@ -5479,6 +5480,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House1 (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_RootOrder
       value: 20
@@ -5634,7 +5639,7 @@ MonoBehaviour:
   points: {fileID: 1732695776}
   lifeUi: {fileID: 870170140}
   panelGameOver: {fileID: 1565689915}
-  draft: {fileID: 164467282}
+  gameOverTitle: {fileID: 2070516087}
 --- !u!1 &1565689915
 GameObject:
   m_ObjectHideFlags: 0
@@ -6426,6 +6431,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House1 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_RootOrder
       value: 18
@@ -6520,12 +6529,6 @@ MonoBehaviour:
   tankView: {fileID: 1932500471}
   menu: {fileID: 1874715740}
   floor: {fileID: 807506729}
-  houses:
-  - {fileID: 1498173081}
-  - {fileID: 1086533524}
-  - {fileID: 1862888228}
-  - {fileID: 340745874}
-  - {fileID: 1564433302}
   ui: {fileID: 1565007163}
   missilesCreator: {fileID: 701043746}
   again: {fileID: 289145386}
@@ -7572,6 +7575,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -7579,6 +7586,71 @@ PrefabInstance:
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+--- !u!1001 &4085352709165406561
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4085352707936196600, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_Name
+      value: House1 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754256945601772342, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: cityId
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_RootOrder
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.87
       objectReference: {fileID: 0}
     - target: {fileID: 4085352707936196602, guid: 619b60c8c87e40240b3c335c57b573fb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7657,3 +7729,4 @@ SceneRoots:
   - {fileID: 983811386}
   - {fileID: 786958162}
   - {fileID: 164467283}
+  - {fileID: 4085352709165406561}
