@@ -11,9 +11,14 @@ namespace View
         [SerializeField] private GameObject limitLeft, limitRight;
         [SerializeField] private GameObject targetLeft, targetRight;
         [SerializeField] private GameObject missile;
+        [SerializeField] private float spawnIntervalSeconds = 1.5f;
 
         private bool _canCreateMissile;
         private bool _sectorActive;
+        private int _spawned;
+        private int _totalCount;
+        private Coroutine _spawnCoroutine;
+        private Coroutine _slowCoroutine;
         private readonly List<Bullet> _activeEnemies = new();
 
         private void Start()
@@ -25,20 +30,47 @@ namespace View
         public void StartSector(int sector)
         {
             if (!_canCreateMissile) return;
-            _sectorActive = true;
-            var config = SectorConfigs.All[sector - 1];
-            Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles");
-            for (var i = 0; i < config.TotalCount; i++)
+            if (_spawnCoroutine != null)
             {
-                var missileLocal = Instantiate(missile) as GameObject;
-                var enemyMissile = missileLocal.GetComponent<Bullet>();
-                var position = new Vector2(Random.Range(limitLeft.transform.position.x, limitRight.transform.position.x), limitLeft.transform.position.y);
-                var target = PickCityTarget();
-                missileLocal.transform.position = position;
-                enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
-                enemyMissile.Configure(target, (target - position).normalized, missileLocal);
-                _activeEnemies.Add(enemyMissile);
+                StopCoroutine(_spawnCoroutine);
             }
+            _sectorActive = true;
+            _spawned = 0;
+            var config = SectorConfigs.All[sector - 1];
+            _totalCount = config.TotalCount;
+            Debug.Log($"Sector {config.Sector}: {config.TotalCount} misiles");
+            _spawnCoroutine = StartCoroutine(SpawnSectorCoroutine(config));
+        }
+
+        // M1a-IT2 (dificultad): los misiles del sector se spawnean ESCALONADOS,
+        // uno cada intervalo, en vez de todos juntos. El total del sector es el
+        // MISMO (SectorConfigs.TotalCount); solo cambia la cadencia. El
+        // intervalo aprieta levemente por sector: baseline spawnIntervalSeconds
+        // - sector*0.1s (mín 0.8s) → S1=1.4s ... S5=1.0s.
+        private IEnumerator SpawnSectorCoroutine(SectorConfig config)
+        {
+            var interval = Mathf.Max(spawnIntervalSeconds - config.Sector * 0.1f, 0.8f);
+            while (_spawned < config.TotalCount)
+            {
+                SpawnOneMissile(config);
+                _spawned++;
+                if (_spawned < config.TotalCount)
+                {
+                    yield return new WaitForSeconds(interval);
+                }
+            }
+        }
+
+        private void SpawnOneMissile(SectorConfig config)
+        {
+            var missileLocal = Instantiate(missile) as GameObject;
+            var enemyMissile = missileLocal.GetComponent<Bullet>();
+            var position = new Vector2(Random.Range(limitLeft.transform.position.x, limitRight.transform.position.x), limitLeft.transform.position.y);
+            var target = PickCityTarget();
+            missileLocal.transform.position = position;
+            enemyMissile.MultiplyImpulseForce(config.SpeedMultiplier);
+            enemyMissile.Configure(target, (target - position).normalized, missileLocal);
+            _activeEnemies.Add(enemyMissile);
         }
 
         private Vector2 PickCityTarget()
@@ -65,7 +97,9 @@ namespace View
         private void Update()
         {
             _activeEnemies.RemoveAll(m => m == null);
-            if (_sectorActive && _activeEnemies.Count == 0)
+            // El sector completa solo cuando TODOS los misiles ya se spawnearon
+            // Y no queda ninguno activo (no completar con spawns pendientes).
+            if (_sectorActive && _spawned >= _totalCount && _activeEnemies.Count == 0)
             {
                 _sectorActive = false;
                 RunSession.Current.CompleteSector();
@@ -75,12 +109,20 @@ namespace View
         public void StopCreatingMissile()
         {
             _canCreateMissile = false;
+            if (_spawnCoroutine != null)
+            {
+                StopCoroutine(_spawnCoroutine);
+                _spawnCoroutine = null;
+            }
         }
 
         public void SlowEnemies(float factor, float duration)
         {
-            StopAllCoroutines();
-            StartCoroutine(SlowEnemiesCoroutine(factor, duration));
+            if (_slowCoroutine != null)
+            {
+                StopCoroutine(_slowCoroutine);
+            }
+            _slowCoroutine = StartCoroutine(SlowEnemiesCoroutine(factor, duration));
         }
 
         private IEnumerator SlowEnemiesCoroutine(float factor, float duration)
