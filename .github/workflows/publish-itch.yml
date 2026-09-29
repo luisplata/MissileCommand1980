@@ -51,11 +51,6 @@ jobs:
           androidExportType: androidPackage
           buildsPath: build
           versioning: None
-      - name: Strip DoNotShip/BackUpThisFolder
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path build -Recurse -Directory -Filter "*DoNotShip*" | Remove-Item -Recurse -Force
-          Get-ChildItem -Path build -Recurse -Directory -Filter "*BackUpThisFolder*" | Remove-Item -Recurse -Force
       - name: Normalize APK
         run: |
           mkdir -p apk-out
