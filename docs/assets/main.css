@@ -1,0 +1,113 @@
+/* Missile Command 1980 — legal pages stylesheet (basic arcade theme) */
+:root {
+  --bg: #0a0e14;
+  --panel: #141a24;
+  --border: #2a3441;
+  --text: #d7e0ea;
+  --muted: #8b98a8;
+  --accent: #ffb03a;
+  --accent-2: #7fd06a;
+  --danger: #e85d4a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header.site {
+  background: linear-gradient(180deg, #10161f, #0a0e14);
+  border-bottom: 2px solid var(--border);
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+header.site .logo { font-size: 1.1rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+header.site h1 { color: var(--accent); font-size: 1.6rem; margin-top: 0.25rem; }
+
+main {
+  flex: 1;
+  max-width: 820px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.25rem;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.75rem 2rem;
+}
+
+.card h2 {
+  color: var(--accent);
+  font-size: 1.15rem;
+  margin: 1.5rem 0 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.35rem;
+}
+
+.card h2:first-child { margin-top: 0; }
+
+.card p { margin: 0.6rem 0; }
+.card ul { margin: 0.6rem 0 0.6rem 1.5rem; }
+.card li { margin: 0.3rem 0; }
+
+.card .meta { color: var(--muted); font-size: 0.9rem; }
+
+.tribute {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--danger);
+  background: rgba(232, 93, 74, 0.08);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+nav.links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+nav.links a {
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+nav.links a:hover { background: rgba(255, 176, 58, 0.12); border-color: var(--accent); }
+
+footer.site {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 1.25rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+a { color: var(--accent-2); }
+
+/* Home */
+.home-hero { text-align: center; padding: 2.5rem 1rem; }
+.home-hero img { max-width: 160px; height: auto; margin-bottom: 1rem; }
+.home-hero h1 { color: var(--accent); font-size: 1.8rem; }
+.home-hero p { color: var(--muted); max-width: 520px; margin: 0.75rem auto; }
+
+@media (max-width: 560px) {
+  .card { padding: 1.25rem 1.25rem; }
+  header.site h1 { font-size: 1.3rem; }
+}
