@@ -64,3 +64,12 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Unity editor personal settings (never commit)
+UserSettings/
+[Uu]ser[Ss]ettings/
+
+# npx skills local lock
+skills-lock.json
+
+# Unity-generated localization bundles cache
+/425c2c90e56d7cd41938195d2548eb14/
