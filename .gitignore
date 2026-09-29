@@ -73,3 +73,6 @@ skills-lock.json
 
 # Unity-generated localization bundles cache
 /425c2c90e56d7cd41938195d2548eb14/
+
+# Android keystores (CI decodes into .github/release.keystore)
+*.keystore
