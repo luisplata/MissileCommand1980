@@ -1,0 +1,95 @@
+name: Publish to Itch (WebGL + Android)
+
+on:
+  workflow_dispatch: {}
+  # push: { branches: [ main ] }   # optional: auto-publish on every push to main
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  build-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: .github/workflows/scripts/free_disk_space.sh
+      - uses: game-ci/unity-builder@v4
+        with:
+          projectPath: .
+          targetPlatform: WebGL
+          buildsPath: build
+          versioning: None
+      - name: Strip DoNotShip/BackUpThisFolder
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path build -Recurse -Directory -Filter "*DoNotShip*" | Remove-Item -Recurse -Force
+          Get-ChildItem -Path build -Recurse -Directory -Filter "*BackUpThisFolder*" | Remove-Item -Recurse -Force
+      - name: Package WebGL zip
+        shell: pwsh
+        run: Compress-Archive -Path build/WebGL/* -DestinationPath MissileCommand1980-webgl.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: webgl-build
+          path: MissileCommand1980-webgl.zip
+          retention-days: 1
+
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: .github/workflows/scripts/free_disk_space.sh
+      - uses: game-ci/unity-builder@v4
+        with:
+          projectPath: .
+          targetPlatform: Android
+          androidExportType: androidPackage
+          buildsPath: build
+          versioning: None
+      - name: Strip DoNotShip/BackUpThisFolder
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path build -Recurse -Directory -Filter "*DoNotShip*" | Remove-Item -Recurse -Force
+          Get-ChildItem -Path build -Recurse -Directory -Filter "*BackUpThisFolder*" | Remove-Item -Recurse -Force
+      - name: Normalize APK
+        run: |
+          mkdir -p apk-out
+          cp "$(find build/Android -name '*.apk' | head -1)" apk-out/MissileCommand1980.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: apk-out
+          retention-days: 1
+
+  deploy-itch:
+    needs: [build-webgl, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      # ── ITCH_USER / ITCH_GAME are PLACEHOLDERS ──────────────────────────
+      # Replace ITCH_USER with your Itch.io username and ITCH_GAME with your
+      # game slug before the FIRST deploy. Requires BUTLER_CREDENTIALS secret
+      # (an Itch.io API key with upload access to the game).
+      - name: Deploy WebGL
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: webgl
+          ITCH_USER: your-itch-user
+          ITCH_GAME: missilecommand1980
+          PACKAGE: webgl-build/MissileCommand1980-webgl.zip
+          VERSION: 1.7
+      - name: Deploy Android
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: android
+          ITCH_USER: your-itch-user
+          ITCH_GAME: missilecommand1980
+          PACKAGE: android-build/MissileCommand1980.apk
+          VERSION: 1.7
