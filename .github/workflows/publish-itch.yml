@@ -66,10 +66,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
-      # ── ITCH_USER / ITCH_GAME are PLACEHOLDERS ──────────────────────────
-      # Replace ITCH_USER with your Itch.io username and ITCH_GAME with your
-      # game slug before the FIRST deploy. Requires BUTLER_CREDENTIALS secret
-      # (an Itch.io API key with upload access to the game).
       - name: Deploy WebGL
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -78,7 +74,7 @@ jobs:
           ITCH_USER: peryloth
           ITCH_GAME: missilecommand1980
           PACKAGE: webgl-build/MissileCommand1980-webgl.zip
-          VERSION: 1.7
+
       - name: Deploy Android
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -87,4 +83,3 @@ jobs:
           ITCH_USER: peryloth
           ITCH_GAME: missilecommand1980
           PACKAGE: android-build/MissileCommand1980.apk
-          VERSION: 1.7
