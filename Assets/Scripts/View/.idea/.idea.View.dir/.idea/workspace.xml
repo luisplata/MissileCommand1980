@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="784293fd-e40a-4122-9f7a-b3eb0fbcbac5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../PlayFabEditorExtensions/Editor/Resources/MostRecentPackage.unitypackage.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Resources/DOTweenSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../Resources/DOTweenSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Packages/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Packages/packages-lock.json" afterDir="false" />
